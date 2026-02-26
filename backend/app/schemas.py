@@ -32,3 +32,17 @@ class TheatreResponse(TheatreBase):
 
     class Config:
         from_attributes = True
+
+class ScreenBase(BaseModel):
+    screen_name: str
+    total_capacity: int
+
+class ScreenCreate(ScreenBase):
+    pass
+
+class ScreenResponse(ScreenBase):
+    screen_id: int
+    theatre_id: int
+
+    class Config:
+        from_attributes = True

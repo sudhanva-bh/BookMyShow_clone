@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, text
+from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, ForeignKey, text
 from app.database import Base
 
 
@@ -25,3 +25,13 @@ class Theatre(Base):
 
     # Replicating the uq_theatre_name_city constraint
     __table_args__ = (UniqueConstraint("name", "city", name="uq_theatre_name_city"),)
+
+class Screen(Base):
+    __tablename__ = "screen"
+
+    screen_id = Column(Integer, primary_key=True, index=True)
+    theatre_id = Column(Integer, ForeignKey("theatre.theatre_id", ondelete="CASCADE"), nullable=False)
+    screen_name = Column(String(50), nullable=False)
+    total_capacity = Column(Integer, nullable=False)
+
+    __table_args__ = (UniqueConstraint("theatre_id", "screen_name", name="uq_screen_theatre_name"),)
