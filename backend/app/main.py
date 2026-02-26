@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.database import get_db
 
+<<<<<<< HEAD
 from app.routers import users, theatres, screens
+=======
+from app.routers import users, theatres,movies
+>>>>>>> cc837318862347699f27153ee02b26bfbda28d96
 
 app = FastAPI(
     title="BookMyShow Clone API",
@@ -13,8 +17,12 @@ app = FastAPI(
 
 app.include_router(users.router)
 app.include_router(theatres.router)
+<<<<<<< HEAD
 app.include_router(screens.router)
 
+=======
+app.include_router(movies.router)
+>>>>>>> cc837318862347699f27153ee02b26bfbda28d96
 
 @app.get("/", tags=["Root"])
 def read_root():

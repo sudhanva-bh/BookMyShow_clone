@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, ForeignKey, text
+=======
+from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, text, Date
+>>>>>>> cc837318862347699f27153ee02b26bfbda28d96
 from app.database import Base
 
 
@@ -26,6 +30,7 @@ class Theatre(Base):
     # Replicating the uq_theatre_name_city constraint
     __table_args__ = (UniqueConstraint("name", "city", name="uq_theatre_name_city"),)
 
+<<<<<<< HEAD
 class Screen(Base):
     __tablename__ = "screen"
 
@@ -35,3 +40,15 @@ class Screen(Base):
     total_capacity = Column(Integer, nullable=False)
 
     __table_args__ = (UniqueConstraint("theatre_id", "screen_name", name="uq_screen_theatre_name"),)
+=======
+
+class Movie(Base):
+    __tablename__ = "movie"
+
+    movie_id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    language = Column(String(50), nullable=False)
+    duration_mins = Column(Integer, nullable=False)
+    release_date = Column(Date, nullable=False)
+    certificate = Column(String(10))
+>>>>>>> cc837318862347699f27153ee02b26bfbda28d96

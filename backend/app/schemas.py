@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from datetime import date, datetime
 
 # Shared properties
 class UserBase(BaseModel):
@@ -33,6 +33,7 @@ class TheatreResponse(TheatreBase):
     class Config:
         from_attributes = True
 
+<<<<<<< HEAD
 class ScreenBase(BaseModel):
     screen_name: str
     total_capacity: int
@@ -43,6 +44,20 @@ class ScreenCreate(ScreenBase):
 class ScreenResponse(ScreenBase):
     screen_id: int
     theatre_id: int
+=======
+class MovieBase(BaseModel):
+    title: str
+    language: str
+    duration_mins: int
+    release_date: date  # You will need: from datetime import date, datetime
+    certificate: str
+
+class MovieCreate(MovieBase):
+    pass
+
+class MovieResponse(MovieBase):
+    movie_id: int
+>>>>>>> cc837318862347699f27153ee02b26bfbda28d96
 
     class Config:
         from_attributes = True
