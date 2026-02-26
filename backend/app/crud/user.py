@@ -14,7 +14,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.add(db_user)
     try:
         db.commit()
-        db.refresh(db_user) # Fetches the new ID and created_at timestamp
+        db.refresh(db_user)
         return db_user
     except IntegrityError:
         db.rollback()

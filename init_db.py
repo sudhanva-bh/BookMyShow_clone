@@ -47,7 +47,7 @@ def create_database():
         print(f"Error creating database: {e}")
         exit(1)
 
-def execute_sql_scripts():
+def execute_sql_scripts(seed_data=False):
     """Connects to the newly created database and runs the SQL files."""
     try:
         conn = psycopg2.connect(
@@ -55,10 +55,15 @@ def execute_sql_scripts():
         )
         cursor = conn.cursor()
 
-        for filename in SQL_FILES:
+        # Copy the base files and conditionally add the seed script
+        files_to_run = SQL_FILES.copy()
+        if seed_data:
+            files_to_run.append("03_sample_data.sql")
+
+        for filename in files_to_run:
             filepath = os.path.join(SCHEMA_DIR, filename)
             if os.path.exists(filepath):
-                print(f"⏳ Executing {filename}...")
+                print(f"Executing {filename}...")
                 with open(filepath, 'r') as file:
                     cursor.execute(file.read())
                 conn.commit()
@@ -77,5 +82,10 @@ if __name__ == "__main__":
     if not DB_PASSWORD:
         print("Error: DB_PASSWORD is not set. Please check your backend/.env file.")
         exit(1)
+        
+    # Ask the user if they want to seed the database
+    seed_choice = input("Do you want to seed the database with sample data? (y/n): ").strip().lower()
+    should_seed = seed_choice in ['y', 'yes']
+
     create_database()
-    execute_sql_scripts()
+    execute_sql_scripts(seed_data=should_seed)
