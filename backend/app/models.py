@@ -1,8 +1,6 @@
-<<<<<<< HEAD
-from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, ForeignKey, text
-=======
-from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, text, Date
->>>>>>> cc837318862347699f27153ee02b26bfbda28d96
+from sqlalchemy import Column, Integer, String, DateTime, Text, UniqueConstraint, ForeignKey, text,Date
+from app.database import Base
+from sqlalchemy import Column, Integer, DateTime, Numeric, ForeignKey, UniqueConstraint
 from app.database import Base
 
 
@@ -30,7 +28,6 @@ class Theatre(Base):
     # Replicating the uq_theatre_name_city constraint
     __table_args__ = (UniqueConstraint("name", "city", name="uq_theatre_name_city"),)
 
-<<<<<<< HEAD
 class Screen(Base):
     __tablename__ = "screen"
 
@@ -40,7 +37,6 @@ class Screen(Base):
     total_capacity = Column(Integer, nullable=False)
 
     __table_args__ = (UniqueConstraint("theatre_id", "screen_name", name="uq_screen_theatre_name"),)
-=======
 
 class Movie(Base):
     __tablename__ = "movie"
@@ -51,4 +47,15 @@ class Movie(Base):
     duration_mins = Column(Integer, nullable=False)
     release_date = Column(Date, nullable=False)
     certificate = Column(String(10))
->>>>>>> cc837318862347699f27153ee02b26bfbda28d96
+
+class Show(Base):
+    __tablename__ = "show"
+
+    show_id = Column(Integer, primary_key=True, index=True)
+    movie_id = Column(Integer, ForeignKey("movie.movie_id", ondelete="CASCADE"), nullable=False)
+    screen_id = Column(Integer, ForeignKey("screen.screen_id", ondelete="CASCADE"), nullable=False)
+    show_time = Column(DateTime, nullable=False)
+    base_price = Column(Numeric(10, 2), nullable=False)
+
+    # Replicating the uq_show_screen_time constraint
+    __table_args__ = (UniqueConstraint("screen_id", "show_time", name="uq_show_screen_time"),)
