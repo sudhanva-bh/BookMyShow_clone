@@ -30,3 +30,9 @@ INSERT INTO movie (title, language, duration_mins, release_date, certificate) VA
 ('KGF: Chapter 2', 'Kannada', 168, '2022-04-14', 'UA'),
 ('Parasite', 'Korean', 132, '2019-05-30', 'A'),
 ('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
+
+-- SEED DATA: SHOWS
+INSERT INTO show (movie_id, screen_id, show_time, base_price) VALUES
+(1, 1, '2026-03-05 14:30:00', 250.00),
+(1, 2, '2026-03-05 18:00:00', 300.00),
+(2, 1, '2026-03-05 10:00:00', 200.00);
