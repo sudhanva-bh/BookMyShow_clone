@@ -1,6 +1,7 @@
 from sqlalchemy import (
     Column,
     Integer,
+    Numeric,
     String,
     DateTime,
     Text,

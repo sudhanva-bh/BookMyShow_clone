@@ -30,3 +30,26 @@ INSERT INTO movie (title, language, duration_mins, release_date, certificate) VA
 ('KGF: Chapter 2', 'Kannada', 168, '2022-04-14', 'UA'),
 ('Parasite', 'Korean', 132, '2019-05-30', 'A'),
 ('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
+
+-- SEED DATA: SCREENS
+
+INSERT INTO screen (theatre_id, screen_name, total_capacity) VALUES
+-- Theatre 1: AMB Cinemas (theatre_id = 1)
+(1, 'Screen 1', 250),
+(1, 'Screen 2', 220),
+(1, 'IMAX', 300),
+
+-- Theatre 2: Prasads Multiplex (theatre_id = 2)
+(2, 'Screen 1', 280),
+(2, 'Screen 2', 200),
+(2, 'Screen 3', 180),
+(2, 'Large Format', 320),
+
+-- Theatre 3: PVR Inorbit (theatre_id = 3)
+(3, 'Screen 1', 210),
+(3, 'Screen 2', 190),
+(3, 'Screen 3', 170),
+
+-- Theatre 4: Asian Shiva Shakti (theatre_id = 4)
+(4, 'Screen 1', 230),
+(4, 'Screen 2', 200);
