@@ -1,23 +1,26 @@
 from pydantic import BaseModel, EmailStr
 from datetime import date, datetime
+from typing import Optional
 
-# Shared properties
+# -------------------- USER --------------------
+
 class UserBase(BaseModel):
     name: str
     email: EmailStr
     phone: str
 
-# Properties required to create a user (Frontend sends this)
 class UserCreate(UserBase):
     pass
 
-# Properties returned from the API (Backend sends this)
 class UserResponse(UserBase):
     user_id: int
     created_at: datetime
 
     class Config:
-        from_attributes = True  # Tells Pydantic to read data from SQLAlchemy models
+        from_attributes = True
+
+
+# -------------------- THEATRE --------------------
 
 class TheatreBase(BaseModel):
     name: str
@@ -33,7 +36,9 @@ class TheatreResponse(TheatreBase):
     class Config:
         from_attributes = True
 
-<<<<<<< HEAD
+
+# -------------------- SCREEN --------------------
+
 class ScreenBase(BaseModel):
     screen_name: str
     total_capacity: int
@@ -44,12 +49,18 @@ class ScreenCreate(ScreenBase):
 class ScreenResponse(ScreenBase):
     screen_id: int
     theatre_id: int
-=======
+
+    class Config:
+        from_attributes = True
+
+
+# -------------------- MOVIE --------------------
+
 class MovieBase(BaseModel):
     title: str
     language: str
     duration_mins: int
-    release_date: date  # You will need: from datetime import date, datetime
+    release_date: date
     certificate: str
 
 class MovieCreate(MovieBase):
@@ -57,7 +68,21 @@ class MovieCreate(MovieBase):
 
 class MovieResponse(MovieBase):
     movie_id: int
->>>>>>> cc837318862347699f27153ee02b26bfbda28d96
 
+    class Config:
+        from_attributes = True
+
+
+#---------------------- SEAT -----------------------
+
+class SeatBase(BaseModel):
+    seat_number: str
+    seat_type: str
+
+class SeatCreate(SeatBase):
+    pass
+
+class SeatResponse(SeatBase):
+    screen_id: int
     class Config:
         from_attributes = True
