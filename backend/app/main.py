@@ -8,7 +8,6 @@ from app.routers import (
     theatres,
     screens,
     movies,
-    seats,
     show,
     bookings,
     payments,
@@ -24,7 +23,6 @@ app.include_router(users.router)
 app.include_router(theatres.router)
 app.include_router(screens.router)
 app.include_router(movies.router)
-app.include_router(seats.router)
 app.include_router(show.router)
 app.include_router(bookings.router)  # New
 app.include_router(payments.router)  # New

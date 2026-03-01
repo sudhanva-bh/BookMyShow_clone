@@ -53,3 +53,26 @@ INSERT INTO screen (theatre_id, screen_name, total_capacity) VALUES
 -- Theatre 4: Asian Shiva Shakti (theatre_id = 4)
 (4, 'Screen 1', 230),
 (4, 'Screen 2', 200);
+
+-- 5. SEED DATA: SHOWS (Dependent on Movie and Screen)
+-- Note: Using CURRENT_TIMESTAMP intervals to test the 20-minute booking constraint
+INSERT INTO show (movie_id, screen_id, show_time, seat_price) VALUES
+-- Shows in the near future (Valid for booking)
+(1, 1, CURRENT_TIMESTAMP + INTERVAL '2 hours', 250.00),
+(2, 2, CURRENT_TIMESTAMP + INTERVAL '1 days 3 hours', 300.00),
+(3, 4, CURRENT_TIMESTAMP + INTERVAL '5 hours', 200.00),
+(4, 5, CURRENT_TIMESTAMP + INTERVAL '2 days', 350.00),
+(5, 7, CURRENT_TIMESTAMP + INTERVAL '45 minutes', 150.00),
+
+-- Shows right on the edge of the 20-min booking restriction
+(6, 8, CURRENT_TIMESTAMP + INTERVAL '25 minutes', 200.00), -- Valid (Barely)
+(8, 10, CURRENT_TIMESTAMP + INTERVAL '15 minutes', 250.00), -- Invalid (Starts in < 20 mins)
+(8, 10, CURRENT_TIMESTAMP + INTERVAL '19 minutes', 250.00), -- Invalid (Starts in < 20 mins)
+
+-- Shows in the past (Good for testing expired/past show handling)
+(7, 9, CURRENT_TIMESTAMP - INTERVAL '5 hours', 180.00),
+(9, 11, CURRENT_TIMESTAMP - INTERVAL '1 days', 200.00),
+
+-- Premium future shows
+(10, 12, CURRENT_TIMESTAMP + INTERVAL '3 days 4 hours', 400.00),
+(1, 3, CURRENT_TIMESTAMP + INTERVAL '12 hours', 450.00); -- IMAX Screen
