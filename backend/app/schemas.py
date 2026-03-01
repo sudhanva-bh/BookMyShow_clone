@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from datetime import date, datetime
 from typing import Optional, List
+from app.models import SeatStatusEnum, BookingStatusEnum, PaymentStatusEnum
+
 
 # USER & THEATRE & SCREEN & MOVIE
 class UserBase(BaseModel):
@@ -8,40 +10,52 @@ class UserBase(BaseModel):
     email: EmailStr
     phone: str
 
+
 class UserCreate(UserBase):
     pass
+
 
 class UserResponse(UserBase):
     user_id: int
     created_at: datetime
+
     class Config:
         from_attributes = True
+
 
 class TheatreBase(BaseModel):
     name: str
     location: str
     city: str
 
+
 class TheatreCreate(TheatreBase):
     pass
 
+
 class TheatreResponse(TheatreBase):
     theatre_id: int
+
     class Config:
         from_attributes = True
+
 
 class ScreenBase(BaseModel):
     screen_name: str
     total_capacity: int
 
+
 class ScreenCreate(ScreenBase):
     pass
+
 
 class ScreenResponse(ScreenBase):
     screen_id: int
     theatre_id: int
+
     class Config:
         from_attributes = True
+
 
 class MovieBase(BaseModel):
     title: str
@@ -50,13 +64,17 @@ class MovieBase(BaseModel):
     release_date: date
     certificate: str
 
+
 class MovieCreate(MovieBase):
     pass
 
+
 class MovieResponse(MovieBase):
     movie_id: int
+
     class Config:
         from_attributes = True
+
 
 # SHOWS & SEATS
 class ShowBase(BaseModel):
@@ -65,53 +83,66 @@ class ShowBase(BaseModel):
     show_time: datetime
     seat_price: float
 
+
 class ShowCreate(ShowBase):
     rows: int
     cols: int
 
+
 class ShowResponse(ShowBase):
     show_id: int
+
     class Config:
         from_attributes = True
+
 
 class SeatBase(BaseModel):
     show_id: int
     screen_id: int
     seat_number: str
-    status: str
+    status: SeatStatusEnum
     booking_id: Optional[int] = None
+
 
 class SeatResponse(SeatBase):
     seat_id: int
+
     class Config:
         from_attributes = True
+
 
 # BOOKINGS & PAYMENTS
 class BookingBase(BaseModel):
     user_id: int
     show_id: int
     total_amount: float
-    status: str
+    status: BookingStatusEnum
+
 
 class BookingCreate(BaseModel):
     user_id: int
     show_id: int
-    seat_ids: List[int] 
+    seat_ids: List[int]
+
 
 class BookingResponse(BookingBase):
     booking_id: int
     booking_time: datetime
+
     class Config:
         from_attributes = True
+
 
 class PaymentBase(BaseModel):
     booking_id: int
     amount: float
-    status: str
+    status: PaymentStatusEnum
+
 
 class PaymentResponse(PaymentBase):
     payment_id: int
     created_at: datetime
     expires_at: datetime
+
     class Config:
         from_attributes = True
