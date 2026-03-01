@@ -4,5 +4,4 @@ const api = axios.create({
   baseURL: 'http://127.0.0.1:8000',
 });
 
-// This is the line that matches your import in UserModule.jsx
 export default api;
