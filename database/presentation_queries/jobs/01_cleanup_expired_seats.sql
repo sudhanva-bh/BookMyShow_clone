@@ -1,7 +1,5 @@
 BEGIN;
 
--- This query simulates the logic of the FastAPI background job
-
 -- 1. Identify and update expired pending payments
 WITH expired_payments AS (
     UPDATE payment

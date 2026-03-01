@@ -27,6 +27,17 @@ def create_theatre(db: Session, theatre: schemas.TheatreCreate):
             detail=f"Theatre '{theatre.name}' already exists in '{theatre.city}'"
         )
 
+def update_theatre(db: Session, theatre_id: int, theatre_update: schemas.TheatreUpdate):
+    db_theatre = get_theatre(db, theatre_id)
+    if not db_theatre:
+        return None
+    update_data = theatre_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_theatre, key, value)
+    db.commit()
+    db.refresh(db_theatre)
+    return db_theatre
+
 def delete_theatre(db: Session, theatre_id: int):
     db_theatre = get_theatre(db, theatre_id)
     if db_theatre:

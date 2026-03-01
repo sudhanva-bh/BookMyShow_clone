@@ -82,11 +82,12 @@ class ShowBase(BaseModel):
     screen_id: int
     show_time: datetime
     seat_price: float
+    rows: int
+    cols: int
 
 
 class ShowCreate(ShowBase):
-    rows: int
-    cols: int
+    pass
 
 
 class ShowResponse(ShowBase):
@@ -146,3 +147,30 @@ class PaymentResponse(PaymentBase):
 
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+
+class TheatreUpdate(BaseModel):
+    name: Optional[str] = None
+    location: Optional[str] = None
+    city: Optional[str] = None
+
+class ScreenUpdate(BaseModel):
+    screen_name: Optional[str] = None
+    total_capacity: Optional[int] = None
+
+class MovieUpdate(BaseModel):
+    title: Optional[str] = None
+    language: Optional[str] = None
+    duration_mins: Optional[int] = None
+    release_date: Optional[date] = None
+    certificate: Optional[str] = None
+
+class ShowUpdate(BaseModel):
+    movie_id: Optional[int] = None
+    screen_id: Optional[int] = None
+    show_time: Optional[datetime] = None
+    seat_price: Optional[float] = None

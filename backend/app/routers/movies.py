@@ -23,6 +23,13 @@ def read_movie(movie_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Movie not found")
     return db_movie
 
+@router.put("/{movie_id}", response_model=schemas.MovieResponse)
+def update_movie(movie_id: int, movie: schemas.MovieUpdate, db: Session = Depends(get_db)):
+    updated_movie = crud_movie.update_movie(db=db, movie_id=movie_id, movie_update=movie)
+    if updated_movie is None:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return updated_movie
+
 @router.delete("/{movie_id}", status_code=204)
 def delete_movie(movie_id: int, db: Session = Depends(get_db)):
     db_movie = crud_movie.delete_movie(db, movie_id=movie_id)

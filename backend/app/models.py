@@ -70,6 +70,8 @@ class Show(Base):
     screen_id = Column(Integer, ForeignKey("screen.screen_id", ondelete="CASCADE"), nullable=False)
     show_time = Column(DateTime, nullable=False)
     seat_price = Column(Numeric(10, 2), nullable=False)
+    rows = Column(Integer, nullable=False, default=10)
+    cols = Column(Integer, nullable=False, default=20)
     
     movie = relationship("Movie", back_populates="shows")
     screen = relationship("Screen", back_populates="shows")

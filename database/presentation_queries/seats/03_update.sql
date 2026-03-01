@@ -1,5 +1,5 @@
--- Changing a specific seat from Regular to Premium
+-- Changing a specific seat's status
 UPDATE seat 
-SET seat_type = 'Premium' 
+SET status = 'BOOKED' 
 WHERE screen_id = 1 AND seat_number = 'A1'
 RETURNING *;

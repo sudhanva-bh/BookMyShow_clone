@@ -1,6 +1,8 @@
+# BookMyShow Database Project
+
 # Installation & Setup Guide
 
-This guide walks you through setting up the Backend (FastAPI + PostgreSQL) and Frontend (React + Vite).
+This guide walks you through setting up the Backend (FastAPI + PostgreSQL), Frontend (React + Vite), and running SQL queries directly.
 
 ---
 
@@ -46,19 +48,15 @@ pip install -r requirements.txt
 
 # Step 2: Configure Environment & Initialize Database
 
-We use an automated script to provision the PostgreSQL database and apply constraints.
-
 ## 1. Create Environment File
 
-Inside the `backend/` directory, create a file named:
+Inside the `backend/` directory, create:
 
 ```
 .env
 ```
 
 ## 2. Add PostgreSQL Credentials
-
-Add the following to `backend/.env`:
 
 ```env
 DB_USER=postgres
@@ -69,8 +67,6 @@ DB_NAME=bookmyshow
 ```
 
 ## 3. Navigate to Root Directory
-
-Ensure your virtual environment is still active.
 
 ```bash
 cd ..
@@ -84,27 +80,131 @@ python init_db.py
 
 ---
 
-# Step 3: Start the Backend Server (FastAPI)
+# Step 3: Running SQL Queries Directly (Using psql)
 
-## 1. Navigate to Backend Directory
+Navigate to the project root directory first.
+
+```bash
+psql -U postgres
+```
+
+Inside `psql`:
+
+```sql
+\c bookmyshow
+```
+
+Then run the following files using `\i`.
+
+---
+
+## Users
+
+```sql
+\i database/presentation_queries/users/01_create.sql
+\i database/presentation_queries/users/02_read.sql
+\i database/presentation_queries/users/03_update.sql
+\i database/presentation_queries/users/04_delete.sql
+```
+
+---
+
+## Movies
+
+```sql
+\i database/presentation_queries/movies/01_create.sql
+\i database/presentation_queries/movies/02_read.sql
+\i database/presentation_queries/movies/03_update.sql
+\i database/presentation_queries/movies/04_delete.sql
+```
+
+---
+
+## Theatres
+
+```sql
+\i database/presentation_queries/theatres/01_create.sql
+\i database/presentation_queries/theatres/02_read.sql
+\i database/presentation_queries/theatres/03_update.sql
+\i database/presentation_queries/theatres/04_delete.sql
+```
+
+---
+
+## Screens
+
+```sql
+\i database/presentation_queries/screen/01_create.sql
+\i database/presentation_queries/screen/02_read.sql
+\i database/presentation_queries/screen/03_update.sql
+\i database/presentation_queries/screen/04_delete.sql
+```
+
+---
+
+## Seats
+
+```sql
+\i database/presentation_queries/seats/01_create.sql
+\i database/presentation_queries/seats/02_read.sql
+\i database/presentation_queries/seats/03_update.sql
+\i database/presentation_queries/seats/04_delete.sql
+```
+
+---
+
+## Shows
+
+```sql
+\i database/presentation_queries/show/01_create.sql
+\i database/presentation_queries/show/02_read.sql
+\i database/presentation_queries/show/03_update.sql
+\i database/presentation_queries/show/04_delete.sql
+\i database/presentation_queries/show/05_get_seats.sql
+```
+
+---
+
+## Bookings
+
+```sql
+\i database/presentation_queries/bookings/01_create_booking_transaction.sql
+\i database/presentation_queries/bookings/02_read_user_bookings.sql
+```
+
+---
+
+## Payments
+
+```sql
+\i database/presentation_queries/payments/01_process_payment_success.sql
+\i database/presentation_queries/payments/02_process_payment_failure.sql
+```
+
+---
+
+## Jobs
+
+```sql
+\i database/presentation_queries/jobs/01_cleanup_expired_seats.sql
+```
+
+---
+
+# Step 4: Start the Backend Server (FastAPI)
 
 ```bash
 cd backend
-```
-
-## 2. Start the Development Server
-
-```bash
 uvicorn app.main:app --reload
 ```
 
-Backend will be available at:
+Backend runs at:
 
 ```
 http://127.0.0.1:8000
 ```
 
-Test the health endpoint:
+Health check:
 
 ```
 http://127.0.0.1:8000/health
@@ -112,29 +212,17 @@ http://127.0.0.1:8000/health
 
 ---
 
-# Step 4: Start the Frontend (React + Vite)
+# Step 5: Start the Frontend (React + Vite)
 
-Open a new terminal window and keep the backend running.
-
-## 1. Navigate to Frontend Directory
+Open a new terminal.
 
 ```bash
 cd frontend
-```
-
-## 2. Install Node Dependencies
-
-```bash
 npm install
-```
-
-## 3. Start the Development Server
-
-```bash
 npm run dev
 ```
 
-Frontend will typically be available at:
+Frontend runs at:
 
 ```
 http://localhost:5173
@@ -144,9 +232,7 @@ http://localhost:5173
 
 # Setup Complete
 
-Your application should now be running:
+Backend: `http://127.0.0.1:8000`
+Frontend: `http://localhost:5173`
 
-* Backend: `http://127.0.0.1:8000`
-* Frontend: `http://localhost:5173`
-
-You are ready to develop and test the application.
+Project ready to use.

@@ -18,6 +18,17 @@ def create_screen(db: Session, screen: schemas.ScreenCreate, theatre_id: int):
     db.refresh(db_screen)
     return db_screen
 
+def update_screen(db: Session, screen_id: int, screen_update: schemas.ScreenUpdate):
+    db_screen = get_screen(db, screen_id)
+    if not db_screen:
+        return None
+    update_data = screen_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_screen, key, value)
+    db.commit()
+    db.refresh(db_screen)
+    return db_screen
+
 def delete_screen(db: Session, screen_id: int):
     db_screen = get_screen(db, screen_id)
     if db_screen:
