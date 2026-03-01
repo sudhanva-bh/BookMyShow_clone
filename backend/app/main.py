@@ -3,7 +3,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.database import get_db
 
-from app.routers import users, theatres, screens, movies, seats, show
+from app.routers import (
+    users,
+    theatres,
+    screens,
+    movies,
+    show,
+    bookings,
+    payments,
+)
 
 app = FastAPI(
     title="BookMyShow Clone API",
@@ -15,8 +23,10 @@ app.include_router(users.router)
 app.include_router(theatres.router)
 app.include_router(screens.router)
 app.include_router(movies.router)
-app.include_router(seats.router)
 app.include_router(show.router)
+app.include_router(bookings.router)  # New
+app.include_router(payments.router)  # New
+
 
 @app.get("/", tags=["Root"])
 def read_root():
@@ -29,7 +39,6 @@ def health_check(db: Session = Depends(get_db)):
     Checks if the API is running AND if the database is actively connected.
     """
     try:
-        # Execute a raw SQL query to verify the connection is alive
         db.execute(text("SELECT 1"))
         return {
             "status": "healthy",
@@ -37,7 +46,6 @@ def health_check(db: Session = Depends(get_db)):
             "message": "API and Database are communicating successfully.",
         }
     except Exception as e:
-        # If the DB is down or credentials are wrong, this will catch it
         raise HTTPException(
             status_code=500, detail=f"Database connection failed: {str(e)}"
         )
