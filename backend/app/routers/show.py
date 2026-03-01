@@ -1,4 +1,3 @@
-# backend/app/routers/shows.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
@@ -29,3 +28,10 @@ def delete_show(show_id: int, db: Session = Depends(get_db)):
     if db_show is None:
         raise HTTPException(status_code=404, detail="Show not found")
     return None
+
+@router.get("/{show_id}/seats", response_model=List[schemas.SeatResponse])
+def read_show_seats(show_id: int, db: Session = Depends(get_db)):
+    db_show = crud_show.get_show(db, show_id=show_id)
+    if db_show is None:
+        raise HTTPException(status_code=404, detail="Show not found")
+    return crud_show.get_seats_for_show(db, show_id=show_id)

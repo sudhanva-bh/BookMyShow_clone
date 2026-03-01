@@ -1,9 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 
-# -------------------- USER --------------------
-
+# USER & THEATRE & SCREEN & MOVIE
 class UserBase(BaseModel):
     name: str
     email: EmailStr
@@ -15,12 +14,8 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     user_id: int
     created_at: datetime
-
     class Config:
         from_attributes = True
-
-
-# -------------------- THEATRE --------------------
 
 class TheatreBase(BaseModel):
     name: str
@@ -32,7 +27,6 @@ class TheatreCreate(TheatreBase):
 
 class TheatreResponse(TheatreBase):
     theatre_id: int
-
     class Config:
         from_attributes = True
 
@@ -46,12 +40,8 @@ class ScreenCreate(ScreenBase):
 class ScreenResponse(ScreenBase):
     screen_id: int
     theatre_id: int
-
     class Config:
         from_attributes = True
-
-
-# -------------------- MOVIE --------------------
 
 class MovieBase(BaseModel):
     title: str
@@ -65,36 +55,63 @@ class MovieCreate(MovieBase):
 
 class MovieResponse(MovieBase):
     movie_id: int
-
     class Config:
         from_attributes = True
 
+# SHOWS & SEATS
 class ShowBase(BaseModel):
     movie_id: int
     screen_id: int
     show_time: datetime
-    base_price: float
+    seat_price: float
 
 class ShowCreate(ShowBase):
-    pass
+    rows: int
+    cols: int
 
 class ShowResponse(ShowBase):
     show_id: int
-
     class Config:
         from_attributes = True
 
-
-#---------------------- SEAT -----------------------
-
 class SeatBase(BaseModel):
+    show_id: int
+    screen_id: int
     seat_number: str
-    seat_type: str
-
-class SeatCreate(SeatBase):
-    pass
+    status: str
+    booking_id: Optional[int] = None
 
 class SeatResponse(SeatBase):
-    screen_id: int
+    seat_id: int
+    class Config:
+        from_attributes = True
+
+# BOOKINGS & PAYMENTS
+class BookingBase(BaseModel):
+    user_id: int
+    show_id: int
+    total_amount: float
+    status: str
+
+class BookingCreate(BaseModel):
+    user_id: int
+    show_id: int
+    seat_ids: List[int] 
+
+class BookingResponse(BookingBase):
+    booking_id: int
+    booking_time: datetime
+    class Config:
+        from_attributes = True
+
+class PaymentBase(BaseModel):
+    booking_id: int
+    amount: float
+    status: str
+
+class PaymentResponse(PaymentBase):
+    payment_id: int
+    created_at: datetime
+    expires_at: datetime
     class Config:
         from_attributes = True
