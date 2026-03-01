@@ -17,3 +17,16 @@ INSERT INTO theatre (name, location, city) VALUES
 ('Prasads Multiplex', 'NTR Marg, Central Secretariat', 'Hyderabad'),
 ('PVR Inorbit', 'Inorbit Mall, Cyberabad', 'Hyderabad'),
 ('Asian Shiva Shakti', 'Kompally Road, Shamirpet', 'Hyderabad');
+
+-- SEED DATA: MOVIES
+INSERT INTO movie (title, language, duration_mins, release_date, certificate) VALUES
+('Inception', 'English', 148, '2010-07-16', 'UA'),
+('Interstellar', 'English', 169, '2014-11-07', 'U'),
+('RRR', 'Telugu', 187, '2022-03-25', 'UA'),
+('Kalki 2898 AD', 'Telugu', 181, '2024-06-27', 'UA'),
+('The Dark Knight', 'English', 152, '2008-07-18', 'UA'),
+('Pushpa: The Rise', 'Telugu', 179, '2021-12-17', 'UA'),
+('Dangal', 'Hindi', 161, '2016-12-23', 'U'),
+('KGF: Chapter 2', 'Kannada', 168, '2022-04-14', 'UA'),
+('Parasite', 'Korean', 132, '2019-05-30', 'A'),
+('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
