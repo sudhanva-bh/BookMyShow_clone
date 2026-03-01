@@ -22,6 +22,13 @@ def read_screen(screen_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Screen not found")
     return db_screen
 
+@router.put("/{screen_id}", response_model=schemas.ScreenResponse)
+def update_screen(screen_id: int, screen: schemas.ScreenUpdate, db: Session = Depends(get_db)):
+    updated_screen = crud_screen.update_screen(db=db, screen_id=screen_id, screen_update=screen)
+    if updated_screen is None:
+        raise HTTPException(status_code=404, detail="Screen not found")
+    return updated_screen
+
 @router.delete("/{screen_id}", status_code=204)
 def delete_screen(screen_id: int, db: Session = Depends(get_db)):
     db_screen = crud_screen.delete_screen(db, screen_id=screen_id)

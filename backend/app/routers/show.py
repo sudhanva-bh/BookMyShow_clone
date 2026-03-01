@@ -22,6 +22,13 @@ def read_show(show_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Show not found")
     return db_show
 
+@router.put("/{show_id}", response_model=schemas.ShowResponse)
+def update_show(show_id: int, show: schemas.ShowUpdate, db: Session = Depends(get_db)):
+    updated_show = crud_show.update_show(db=db, show_id=show_id, show_update=show)
+    if updated_show is None:
+        raise HTTPException(status_code=404, detail="Show not found")
+    return updated_show
+
 @router.delete("/{show_id}", status_code=204)
 def delete_show(show_id: int, db: Session = Depends(get_db)):
     db_show = crud_show.delete_show(db, show_id=show_id)

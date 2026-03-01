@@ -50,6 +50,16 @@ def create_show(db: Session, show: schemas.ShowCreate):
 
     return db_show
 
+def update_show(db: Session, show_id: int, show_update: schemas.ShowUpdate):
+    db_show = get_show(db, show_id)
+    if not db_show:
+        return None
+    update_data = show_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_show, key, value)
+    db.commit()
+    db.refresh(db_show)
+    return db_show
 
 def delete_show(db: Session, show_id: int):
     db_show = get_show(db, show_id)
