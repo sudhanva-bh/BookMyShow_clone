@@ -31,8 +31,7 @@ INSERT INTO movie (title, language, duration_mins, release_date, certificate) VA
 ('Parasite', 'Korean', 132, '2019-05-30', 'A'),
 ('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
 
--- SEED DATA: SCREENS
-
+-- 4. SEED DATA: SCREENS
 INSERT INTO screen (theatre_id, screen_name, total_capacity) VALUES
 -- Theatre 1: AMB Cinemas (theatre_id = 1)
 (1, 'Screen 1', 250),

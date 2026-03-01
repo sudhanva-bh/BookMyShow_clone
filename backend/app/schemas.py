@@ -1,16 +1,19 @@
 from pydantic import BaseModel, EmailStr
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
+from app.models import SeatStatusEnum, BookingStatusEnum, PaymentStatusEnum
 
-# -------------------- USER --------------------
 
+# USER & THEATRE & SCREEN & MOVIE
 class UserBase(BaseModel):
     name: str
     email: EmailStr
     phone: str
 
+
 class UserCreate(UserBase):
     pass
+
 
 class UserResponse(UserBase):
     user_id: int
@@ -20,15 +23,15 @@ class UserResponse(UserBase):
         from_attributes = True
 
 
-# -------------------- THEATRE --------------------
-
 class TheatreBase(BaseModel):
     name: str
     location: str
     city: str
 
+
 class TheatreCreate(TheatreBase):
     pass
+
 
 class TheatreResponse(TheatreBase):
     theatre_id: int
@@ -36,12 +39,15 @@ class TheatreResponse(TheatreBase):
     class Config:
         from_attributes = True
 
+
 class ScreenBase(BaseModel):
     screen_name: str
     total_capacity: int
 
+
 class ScreenCreate(ScreenBase):
     pass
+
 
 class ScreenResponse(ScreenBase):
     screen_id: int
@@ -51,8 +57,6 @@ class ScreenResponse(ScreenBase):
         from_attributes = True
 
 
-# -------------------- MOVIE --------------------
-
 class MovieBase(BaseModel):
     title: str
     language: str
@@ -60,8 +64,10 @@ class MovieBase(BaseModel):
     release_date: date
     certificate: str
 
+
 class MovieCreate(MovieBase):
     pass
+
 
 class MovieResponse(MovieBase):
     movie_id: int
@@ -69,14 +75,19 @@ class MovieResponse(MovieBase):
     class Config:
         from_attributes = True
 
+
+# SHOWS & SEATS
 class ShowBase(BaseModel):
     movie_id: int
     screen_id: int
     show_time: datetime
-    base_price: float
+    seat_price: float
+
 
 class ShowCreate(ShowBase):
-    pass
+    rows: int
+    cols: int
+
 
 class ShowResponse(ShowBase):
     show_id: int
@@ -85,16 +96,53 @@ class ShowResponse(ShowBase):
         from_attributes = True
 
 
-#---------------------- SEAT -----------------------
-
 class SeatBase(BaseModel):
+    show_id: int
+    screen_id: int
     seat_number: str
-    seat_type: str
+    status: SeatStatusEnum
+    booking_id: Optional[int] = None
 
-class SeatCreate(SeatBase):
-    pass
 
 class SeatResponse(SeatBase):
-    screen_id: int
+    seat_id: int
+
+    class Config:
+        from_attributes = True
+
+
+# BOOKINGS & PAYMENTS
+class BookingBase(BaseModel):
+    user_id: int
+    show_id: int
+    total_amount: float
+    status: BookingStatusEnum
+
+
+class BookingCreate(BaseModel):
+    user_id: int
+    show_id: int
+    seat_ids: List[int]
+
+
+class BookingResponse(BookingBase):
+    booking_id: int
+    booking_time: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PaymentBase(BaseModel):
+    booking_id: int
+    amount: float
+    status: PaymentStatusEnum
+
+
+class PaymentResponse(PaymentBase):
+    payment_id: int
+    created_at: datetime
+    expires_at: datetime
+
     class Config:
         from_attributes = True
