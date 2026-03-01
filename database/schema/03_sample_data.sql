@@ -30,23 +30,3 @@ INSERT INTO movie (title, language, duration_mins, release_date, certificate) VA
 ('KGF: Chapter 2', 'Kannada', 168, '2022-04-14', 'UA'),
 ('Parasite', 'Korean', 132, '2019-05-30', 'A'),
 ('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
-
--- 4. SEED DATA: SCREENS (Requires Theatre ID)
--- We assume IDs 1, 2, 3, 4 are generated for the theatres above
-INSERT INTO screen (theatre_id, screen_name, total_capacity) VALUES
-(1, 'Screen 1', 100),
-(1, 'Screen 2', 120),
-(2, 'IMAX Large', 250),
-(3, 'Audi 1', 150),
-(4, 'Main Screen', 200);
-
--- 5. SEED DATA: SEATS (Requires Screen ID)
--- Adding seats for AMB Cinemas - Screen 1 (ID: 1)
-INSERT INTO seat (screen_id, seat_number, seat_type) VALUES
-(1, 'A1', 'Regular'), (1, 'A2', 'Regular'), (1, 'A3', 'Regular'),
-(1, 'B1', 'Premium'), (1, 'B2', 'Premium'), (1, 'J1', 'VIP');
-
--- Adding seats for Prasads Multiplex - IMAX (ID: 3)
-INSERT INTO seat (screen_id, seat_number, seat_type) VALUES
-(3, 'A1', 'Regular'), (3, 'A2', 'Regular'), (3, 'A3', 'Regular'),
-(3, 'M1', 'Premium'), (3, 'M2', 'Premium'), (3, 'S1', 'VIP');

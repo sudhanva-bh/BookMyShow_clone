@@ -36,9 +36,6 @@ class TheatreResponse(TheatreBase):
     class Config:
         from_attributes = True
 
-
-# -------------------- SCREEN --------------------
-
 class ScreenBase(BaseModel):
     screen_name: str
     total_capacity: int
@@ -68,6 +65,21 @@ class MovieCreate(MovieBase):
 
 class MovieResponse(MovieBase):
     movie_id: int
+
+    class Config:
+        from_attributes = True
+
+class ShowBase(BaseModel):
+    movie_id: int
+    screen_id: int
+    show_time: datetime
+    base_price: float
+
+class ShowCreate(ShowBase):
+    pass
+
+class ShowResponse(ShowBase):
+    show_id: int
 
     class Config:
         from_attributes = True

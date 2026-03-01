@@ -1,0 +1,3 @@
+DELETE FROM show 
+WHERE show_id = 1
+RETURNING *;
