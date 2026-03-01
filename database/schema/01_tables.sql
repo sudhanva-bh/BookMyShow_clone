@@ -41,7 +41,9 @@ CREATE TABLE show (
     movie_id INT NOT NULL,
     screen_id INT NOT NULL,
     show_time TIMESTAMP NOT NULL,
-    seat_price DECIMAL(10,2) NOT NULL
+    seat_price DECIMAL(10,2) NOT NULL,
+    rows INT NOT NULL DEFAULT 10,
+    cols INT NOT NULL DEFAULT 20
 );
 
 -- BOOKING & PAYMENTS

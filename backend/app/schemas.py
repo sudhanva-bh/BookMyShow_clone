@@ -82,11 +82,12 @@ class ShowBase(BaseModel):
     screen_id: int
     show_time: datetime
     seat_price: float
+    rows: int
+    cols: int
 
 
 class ShowCreate(ShowBase):
-    rows: int
-    cols: int
+    pass
 
 
 class ShowResponse(ShowBase):

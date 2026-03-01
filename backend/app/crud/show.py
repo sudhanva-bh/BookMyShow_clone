@@ -19,6 +19,8 @@ def create_show(db: Session, show: schemas.ShowCreate):
         screen_id=show.screen_id,
         show_time=show.show_time,
         seat_price=show.seat_price,
+        rows=show.rows,
+        cols=show.cols,
     )
     db.add(db_show)
     db.commit()
