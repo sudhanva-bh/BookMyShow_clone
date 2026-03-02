@@ -3,17 +3,24 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from app import models, schemas
 
+
 def get_theatre(db: Session, theatre_id: int):
-    return db.query(models.Theatre).filter(models.Theatre.theatre_id == theatre_id).first()
+    return (
+        db.query(models.Theatre).filter(models.Theatre.theatre_id == theatre_id).first()
+    )
+
 
 def get_theatres(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Theatre).offset(skip).limit(limit).all()
 
+
+def get_theatres_by_city(db: Session, city: str):
+    return db.query(models.Theatre).filter(models.Theatre.city.ilike(city)).all()
+
+
 def create_theatre(db: Session, theatre: schemas.TheatreCreate):
     db_theatre = models.Theatre(
-        name=theatre.name, 
-        location=theatre.location, 
-        city=theatre.city
+        name=theatre.name, location=theatre.location, city=theatre.city
     )
     db.add(db_theatre)
     try:
@@ -23,9 +30,10 @@ def create_theatre(db: Session, theatre: schemas.TheatreCreate):
     except IntegrityError:
         db.rollback()
         raise HTTPException(
-            status_code=400, 
-            detail=f"Theatre '{theatre.name}' already exists in '{theatre.city}'"
+            status_code=400,
+            detail=f"Theatre '{theatre.name}' already exists in '{theatre.city}'",
         )
+
 
 def update_theatre(db: Session, theatre_id: int, theatre_update: schemas.TheatreUpdate):
     db_theatre = get_theatre(db, theatre_id)
@@ -37,6 +45,7 @@ def update_theatre(db: Session, theatre_id: int, theatre_update: schemas.Theatre
     db.commit()
     db.refresh(db_theatre)
     return db_theatre
+
 
 def delete_theatre(db: Session, theatre_id: int):
     db_theatre = get_theatre(db, theatre_id)

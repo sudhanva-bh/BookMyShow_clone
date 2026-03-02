@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from app import models, schemas
@@ -18,7 +18,6 @@ def create_booking(db: Session, booking: schemas.BookingCreate):
             detail="Cannot book tickets for a show starting in less than 20 minutes",
         )
 
-    # Pessimistic Locking to avoid Double-Booking Race Condition
     seats = (
         db.query(models.Seat)
         .filter(models.Seat.seat_id.in_(booking.seat_ids))
@@ -47,14 +46,12 @@ def create_booking(db: Session, booking: schemas.BookingCreate):
         status=models.BookingStatusEnum.Pending,
     )
     db.add(db_booking)
-    db.flush()  # Flush to get booking_id before locking seats
+    db.flush()
 
-    # Lock Seats for Processing
     for seat in seats:
         seat.status = models.SeatStatusEnum.PROCESSING
         seat.booking_id = db_booking.booking_id
 
-    # Initialize Payment with 120s Expiry
     db_payment = models.Payment(
         booking_id=db_booking.booking_id,
         amount=total_amount,
@@ -66,3 +63,18 @@ def create_booking(db: Session, booking: schemas.BookingCreate):
     db.refresh(db_booking)
 
     return db_booking
+
+
+def get_user_bookings(db: Session, user_id: int):
+    return (
+        db.query(models.Booking)
+        .options(
+            joinedload(models.Booking.show).joinedload(models.Show.movie),
+            joinedload(models.Booking.show)
+            .joinedload(models.Show.screen)
+            .joinedload(models.Screen.theatre),
+        )
+        .filter(models.Booking.user_id == user_id)
+        .order_by(models.Booking.booking_time.desc())
+        .all()
+    )

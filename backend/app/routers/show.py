@@ -36,13 +36,11 @@ def update_show(show_id: int, show: schemas.ShowUpdate, db: Session = Depends(ge
 
 @router.get("/screen/{screen_id}", response_model=List[schemas.ShowResponse])
 def read_shows_by_screen(screen_id: int, db: Session = Depends(get_db)):
-    # Check if the screen exists first (optional but recommended)
     from app.crud import screen as crud_screen
 
     db_screen = crud_screen.get_screen(db, screen_id=screen_id)
     if db_screen is None:
         raise HTTPException(status_code=404, detail="Screen not found")
-
     return crud_show.get_shows_by_screen(db, screen_id=screen_id)
 
 
@@ -60,3 +58,11 @@ def read_show_seats(show_id: int, db: Session = Depends(get_db)):
     if db_show is None:
         raise HTTPException(status_code=404, detail="Show not found")
     return crud_show.get_seats_for_show(db, show_id=show_id)
+
+
+@router.get("/{show_id}/seatmap-stats", response_model=schemas.SeatMapStatsResponse)
+def read_seatmap_stats(show_id: int, db: Session = Depends(get_db)):
+    stats = crud_show.get_seatmap_stats(db, show_id=show_id)
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Show not found")
+    return stats

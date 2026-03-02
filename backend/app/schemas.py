@@ -3,8 +3,9 @@ from datetime import date, datetime
 from typing import Optional, List
 from app.models import SeatStatusEnum, BookingStatusEnum, PaymentStatusEnum
 
+# ----------------- BASE MODELS -----------------
 
-# USER & THEATRE & SCREEN & MOVIE
+
 class UserBase(BaseModel):
     name: str
     email: EmailStr
@@ -58,6 +59,10 @@ class ScreenResponse(ScreenBase):
         from_attributes = True
 
 
+class ScreenWithTheatreResponse(ScreenResponse):
+    theatre: Optional[TheatreResponse] = None
+
+
 class MovieBase(BaseModel):
     title: str
     language: str
@@ -77,7 +82,9 @@ class MovieResponse(MovieBase):
         from_attributes = True
 
 
-# SHOWS & SEATS
+# ----------------- SHOWS & SEATS -----------------
+
+
 class ShowBase(BaseModel):
     movie_id: int
     screen_id: int
@@ -89,11 +96,17 @@ class ShowCreate(ShowBase):
     pass
 
 
+# FIX applied: Added nested Movie and Screen details for richer frontend data
 class ShowResponse(ShowBase):
     show_id: int
+    movie: Optional[MovieResponse] = None
 
     class Config:
         from_attributes = True
+
+
+class ShowDetailResponse(ShowResponse):
+    screen: Optional[ScreenWithTheatreResponse] = None
 
 
 class SeatBase(BaseModel):
@@ -111,7 +124,18 @@ class SeatResponse(SeatBase):
         from_attributes = True
 
 
-# BOOKINGS & PAYMENTS
+class SeatMapStatsResponse(BaseModel):
+    show_id: int
+    total_seats: int
+    available_seats: int
+    booked_seats: int
+    processing_seats: int
+    seat_price: float
+
+
+# ----------------- BOOKINGS & PAYMENTS -----------------
+
+
 class BookingBase(BaseModel):
     user_id: int
     show_id: int
@@ -133,6 +157,11 @@ class BookingResponse(BookingBase):
         from_attributes = True
 
 
+# NEW: Booking History
+class BookingDetailResponse(BookingResponse):
+    show: Optional[ShowDetailResponse] = None
+
+
 class PaymentBase(BaseModel):
     booking_id: int
     amount: float
@@ -147,20 +176,44 @@ class PaymentResponse(PaymentBase):
     class Config:
         from_attributes = True
 
+
+# ----------------- ADMIN STATS -----------------
+class RevenueStatsResponse(BaseModel):
+    movie_id: int
+    movie_title: str
+    total_revenue: float
+
+
+class OccupancyStatsResponse(BaseModel):
+    show_id: int
+    movie_title: str
+    theatre_name: str
+    show_time: datetime
+    total_seats: int
+    booked_seats: int
+    occupancy_percentage: float
+
+
+# ----------------- UPDATES -----------------
+
+
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
+
 
 class TheatreUpdate(BaseModel):
     name: Optional[str] = None
     location: Optional[str] = None
     city: Optional[str] = None
 
+
 class ScreenUpdate(BaseModel):
     screen_name: Optional[str] = None
     rows: Optional[int] = None
     cols: Optional[int] = None
+
 
 class MovieUpdate(BaseModel):
     title: Optional[str] = None
@@ -168,6 +221,7 @@ class MovieUpdate(BaseModel):
     duration_mins: Optional[int] = None
     release_date: Optional[date] = None
     certificate: Optional[str] = None
+
 
 class ShowUpdate(BaseModel):
     movie_id: Optional[int] = None

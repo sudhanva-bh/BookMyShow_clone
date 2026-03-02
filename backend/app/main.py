@@ -15,6 +15,7 @@ from app.routers import (
     show,
     bookings,
     payments,
+    admin,  # FIX: Added new router
 )
 
 app = FastAPI(
@@ -23,7 +24,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS Middleware (Crucial for Frontend React requests)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -39,9 +39,9 @@ app.include_router(movies.router)
 app.include_router(show.router)
 app.include_router(bookings.router)
 app.include_router(payments.router)
+app.include_router(admin.router)  # FIX: Include new Admin router
 
 
-# --- Background Task to Release Expired Pending Seats ---
 def clean_expired_seats():
     db = SessionLocal()
     try:
@@ -82,7 +82,7 @@ def clean_expired_seats():
 async def seat_cleanup_job():
     while True:
         await asyncio.to_thread(clean_expired_seats)
-        await asyncio.sleep(60)  # Run every minute
+        await asyncio.sleep(60)
 
 
 @app.on_event("startup")
