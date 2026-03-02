@@ -33,7 +33,8 @@ CREATE TABLE screen (
     screen_id SERIAL PRIMARY KEY,
     theatre_id INT NOT NULL,
     screen_name VARCHAR(50) NOT NULL,
-    total_capacity INT NOT NULL
+    rows INT NOT NULL DEFAULT 10,
+    cols INT NOT NULL DEFAULT 20
 );
 
 CREATE TABLE show (

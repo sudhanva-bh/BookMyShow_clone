@@ -32,23 +32,23 @@ INSERT INTO movie (title, language, duration_mins, release_date, certificate) VA
 ('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
 
 -- 4. SEED DATA: SCREENS
-INSERT INTO screen (theatre_id, screen_name, total_capacity) VALUES
+INSERT INTO screen (theatre_id, screen_name, rows, cols) VALUES
 -- Theatre 1: AMB Cinemas (theatre_id = 1)
-(1, 'Screen 1', 250),
-(1, 'Screen 2', 220),
-(1, 'IMAX', 300),
+(1, 'Screen 1', 10, 25),
+(1, 'Screen 2', 10, 22),
+(1, 'IMAX', 15, 20),
 
 -- Theatre 2: Prasads Multiplex (theatre_id = 2)
-(2, 'Screen 1', 280),
-(2, 'Screen 2', 200),
-(2, 'Screen 3', 180),
-(2, 'Large Format', 320),
+(2, 'Screen 1', 14, 20),
+(2, 'Screen 2', 10, 20),
+(2, 'Screen 3', 10, 18),
+(2, 'Large Format', 16, 20),
 
 -- Theatre 3: PVR Inorbit (theatre_id = 3)
-(3, 'Screen 1', 210),
-(3, 'Screen 2', 190),
-(3, 'Screen 3', 170),
+(3, 'Screen 1', 10, 21),
+(3, 'Screen 2', 10, 19),
+(3, 'Screen 3', 10, 17),
 
 -- Theatre 4: Asian Shiva Shakti (theatre_id = 4)
-(4, 'Screen 1', 230),
-(4, 'Screen 2', 200);
+(4, 'Screen 1', 10, 23),
+(4, 'Screen 2', 10, 20);

@@ -10,7 +10,8 @@ def get_screens(db: Session, skip: int = 0, limit: int = 100):
 def create_screen(db: Session, screen: schemas.ScreenCreate, theatre_id: int):
     db_screen = models.Screen(
         screen_name=screen.screen_name,
-        total_capacity=screen.total_capacity,
+        rows=screen.rows,
+        cols=screen.cols,
         theatre_id=theatre_id
     )
     db.add(db_screen)
