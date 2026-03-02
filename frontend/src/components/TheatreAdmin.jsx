@@ -15,20 +15,27 @@ const TheatreAdmin = ({ styles }) => {
   useEffect(() => { fetchTheatres(); }, []);
 
   const fetchTheatres = async () => {
-    const res = await api.get('/theatres/'); //
-    setTheatres(res.data);
+    try {
+      const res = await api.get('/theatres/');
+      setTheatres(res.data);
+    } catch (err) { console.error("Theatre fetch error", err); }
   };
 
-  const fetchScreens = async (id) => {
-    const res = await api.get('/screens/'); //
-    setScreens(res.data.filter(s => s.theatre_id === id));
+  const fetchScreens = async (theatreId) => {
+    try {
+      // Backend returns all screens; filter by the specific theatre_id
+      const res = await api.get('/screens/');
+      setScreens(res.data.filter(s => s.theatre_id === theatreId));
+    } catch (err) { console.error("Screen fetch error", err); }
   };
 
   const handleCreateTheatre = async (e) => {
     e.preventDefault();
-    await api.post('/theatres/', form); //
-    setForm({ name: '', location: '', city: '' });
-    fetchTheatres();
+    try {
+      await api.post('/theatres/', form);
+      setForm({ name: '', location: '', city: '' });
+      fetchTheatres();
+    } catch (err) { alert(err.response?.data?.detail || "Error creating theatre"); }
   };
 
   const handleTheatreClick = (theatre) => {
@@ -41,20 +48,24 @@ const TheatreAdmin = ({ styles }) => {
   };
 
   const executeAction = async () => {
-    if (confirmConfig.type === 'SAVE_SCREEN') {
-      if (editingScreen) {
-        await api.put(`/screens/${editingScreen.screen_id}`, screenForm); //
-      } else {
-        await api.post(`/screens/${selectedTheatre.theatre_id}`, screenForm); //
+    try {
+      if (confirmConfig.type === 'SAVE_SCREEN') {
+        if (editingScreen) {
+          await api.put(`/screens/${editingScreen.screen_id}`, screenForm);
+        } else {
+          await api.post(`/screens/${selectedTheatre.theatre_id}`, screenForm);
+        }
+      } else if (confirmConfig.type === 'DELETE_SCREEN') {
+        await api.delete(`/screens/${confirmConfig.targetId}`);
       }
-    } else if (confirmConfig.type === 'DELETE_SCREEN') {
-      await api.delete(`/screens/${confirmConfig.targetId}`); //
-    }
-    setConfirmConfig({ show: false });
-    setEditingScreen(null);
-    setShowModal(false);
-    setScreenForm({ screen_name: '', total_capacity: '' });
-    fetchScreens(selectedTheatre.theatre_id);
+      
+      // Cleanup and refresh
+      setConfirmConfig({ show: false });
+      setEditingScreen(null);
+      setShowModal(false);
+      setScreenForm({ screen_name: '', total_capacity: '' });
+      fetchScreens(selectedTheatre.theatre_id);
+    } catch (err) { alert("Action failed"); }
   };
 
   return (
@@ -87,11 +98,11 @@ const TheatreAdmin = ({ styles }) => {
                   <div style={{ color: '#fff' }}>{s.screen_name} <small style={{ color: '#888' }}>({s.total_capacity} seats)</small></div>
                   <div className="hover-actions" style={styles.actionGroup}>
                     <button onClick={() => { setEditingScreen(s); setScreenForm({ screen_name: s.screen_name, total_capacity: s.total_capacity }); setShowModal(true); }} style={styles.editBtn}>Edit</button>
-                    <button onClick={() => triggerConfirm('DELETE_SCREEN', 'Are u sure you want to delete', s.screen_id)} style={styles.deleteBtn}>Delete</button>
+                    <button onClick={() => triggerConfirm('DELETE_SCREEN', 'Delete this screen?', s.screen_id)} style={styles.deleteBtn}>Delete</button>
                   </div>
                 </div>
               ))}
-              <button onClick={() => { setEditingScreen(null); setShowModal(true); }} style={styles.addScreenBtn}>+ Add Screen</button>
+              <button onClick={() => { setEditingScreen(null); setScreenForm({ screen_name: '', total_capacity: '' }); setShowModal(true); }} style={styles.addScreenBtn}>+ Add Screen</button>
             </div>
           </div>
         ) : (
@@ -111,7 +122,7 @@ const TheatreAdmin = ({ styles }) => {
         <div style={styles.modalOverlay}>
           <div style={styles.modalContent}>
             <h3 style={{ color: '#fff', marginTop: 0 }}>{editingScreen ? 'Edit' : 'Add'} Screen</h3>
-            <form onSubmit={(e) => { e.preventDefault(); triggerConfirm('SAVE_SCREEN', 'Save changes'); }} style={styles.formStyle}>
+            <form onSubmit={(e) => { e.preventDefault(); triggerConfirm('SAVE_SCREEN', 'Save changes?'); }} style={styles.formStyle}>
               <input style={styles.inputStyle} placeholder="Screen Name" value={screenForm.screen_name} onChange={e => setScreenForm({...screenForm, screen_name: e.target.value})} required />
               <input style={styles.inputStyle} placeholder="Capacity" type="number" value={screenForm.total_capacity} onChange={e => setScreenForm({...screenForm, total_capacity: e.target.value})} required />
               <div style={{ display: 'flex', gap: '10px' }}>

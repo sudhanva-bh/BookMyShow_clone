@@ -6,55 +6,64 @@ const MovieAdmin = ({ styles }) => {
   const [form, setForm] = useState({ title: '', language: '', duration_mins: '', release_date: '', certificate: '' });
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movieSchedules, setMovieSchedules] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => { fetchMovies(); }, []);
 
   const fetchMovies = async () => {
     try {
-      const res = await api.get('/movies/'); //
+      const res = await api.get('/movies/');
       setMovies(res.data);
     } catch (err) { console.error("Error fetching movies", err); }
   };
 
   const handleMovieClick = async (movie) => {
     setSelectedMovie(movie);
+    setLoading(true);
     try {
-      // 1. Fetch all shows, screens, and theatres to build the relationship
+      // Fetch data in parallel for efficiency
       const [showsRes, screensRes, theatresRes] = await Promise.all([
-        api.get('/shows/'), //
-        api.get('/screens/'), //
-        api.get('/theatres/') //
+        api.get('/shows/'),
+        api.get('/screens/'),
+        api.get('/theatres/')
       ]);
 
-      // 2. Filter shows for this movie
-      const movieShows = showsRes.data.filter(s => s.movie_id === movie.movie_id);
-      
-      // 3. Map shows to their Theatre and Screen names
-      const scheduleMap = movieShows.map(show => {
-        const screen = screensRes.data.find(scr => scr.screen_id === show.screen_id);
-        const theatre = theatresRes.data.find(th => th.theatre_id === screen?.theatre_id);
-        return {
-          id: show.show_id,
-          theatreName: theatre ? theatre.name : "Unknown Theatre",
-          screenName: screen ? screen.screen_name : "Unknown Screen"
-        };
-      });
+      // Create Lookups (Dictionaries) for O(1) access instead of repeated .find()
+      const screenMap = Object.fromEntries(screensRes.data.map(s => [s.screen_id, s]));
+      const theatreMap = Object.fromEntries(theatresRes.data.map(t => [t.theatre_id, t]));
 
-      // Remove duplicates if the movie plays on the same screen at multiple times
-      const uniqueSchedules = Array.from(new Set(scheduleMap.map(s => `${s.theatreName}-${s.screenName}`)))
-        .map(id => scheduleMap.find(s => `${s.theatreName}-${s.screenName}` === id));
+      const uniqueSchedules = [];
+      const seenPairs = new Set();
+
+      showsRes.data
+        .filter(s => s.movie_id === movie.movie_id)
+        .forEach(show => {
+          const screen = screenMap[show.screen_id];
+          const theatre = theatreMap[screen?.theatre_id];
+          const pairKey = `${theatre?.theatre_id}-${screen?.screen_id}`;
+
+          if (theatre && screen && !seenPairs.has(pairKey)) {
+            seenPairs.add(pairKey);
+            uniqueSchedules.push({
+              id: show.show_id,
+              theatreName: theatre.name,
+              screenName: screen.screen_name
+            });
+          }
+        });
 
       setMovieSchedules(uniqueSchedules);
     } catch (err) { 
       console.error("Error building movie schedule", err);
-      setMovieSchedules([]); 
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCreateMovie = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/movies/', form); //
+      await api.post('/movies/', form);
       setForm({ title: '', language: '', duration_mins: '', release_date: '', certificate: '' });
       fetchMovies();
     } catch (err) { alert("Error creating movie"); }
@@ -62,13 +71,13 @@ const MovieAdmin = ({ styles }) => {
 
   return (
     <div style={styles.moduleWrapper}>
-      {/* Left Column: Movies List */}
       <div style={styles.columnStyle}>
         <h3 style={styles.titleStyle}>All Movies</h3>
         <div style={styles.scrollContainer}>
           {movies.map(m => (
-            <div key={m.movie_id} onClick={() => handleMovieClick(m)}
+            <div key={m.movie_id} onClick={() => !loading && handleMovieClick(m)}
                  style={{ ...styles.cardStyle, 
+                          opacity: loading ? 0.7 : 1,
                           background: selectedMovie?.movie_id === m.movie_id ? '#333' : '#1a1a1a', 
                           border: selectedMovie?.movie_id === m.movie_id ? '1px solid #f3ce00' : '1px solid #333' }}>
               <strong style={{ color: '#fff' }}>{m.title}</strong><br/>
@@ -78,7 +87,6 @@ const MovieAdmin = ({ styles }) => {
         </div>
       </div>
 
-      {/* Right Column: Theatres and Screens */}
       <div style={{ ...styles.columnStyle, borderLeft: '1px solid #333' }}>
         {selectedMovie ? (
           <div style={styles.flexColumn}>
@@ -87,14 +95,15 @@ const MovieAdmin = ({ styles }) => {
               <button onClick={() => setSelectedMovie(null)} style={styles.backSmallBtn}>Back</button>
             </div>
             <div style={styles.scrollContainer}>
-              {movieSchedules.length > 0 ? movieSchedules.map(item => (
+              {loading ? <p style={{ color: '#666', textAlign: 'center' }}>Loading schedules...</p> : 
+                movieSchedules.length > 0 ? movieSchedules.map(item => (
                 <div key={item.id} style={styles.screenCard}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ color: '#fff', fontWeight: 'bold', fontSize: '1rem' }}>{item.theatreName}</span>
+                    <span style={{ color: '#fff', fontWeight: 'bold' }}>{item.theatreName}</span>
                     <span style={{ color: '#888', fontSize: '0.85rem' }}>{item.screenName}</span>
                   </div>
                 </div>
-              )) : <p style={{ color: '#666', textAlign: 'center', marginTop: '20px' }}>No active shows found for this movie.</p>}
+              )) : <p style={{ color: '#666', textAlign: 'center', marginTop: '20px' }}>No active shows found.</p>}
             </div>
           </div>
         ) : (
