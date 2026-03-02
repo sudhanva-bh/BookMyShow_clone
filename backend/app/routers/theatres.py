@@ -4,6 +4,8 @@ from typing import List
 from app import schemas
 from app.crud import theatre as crud_theatre
 from app.database import get_db
+from datetime import date
+from app.crud import show as crud_show
 
 router = APIRouter(prefix="/theatres", tags=["Theatres"])
 
@@ -21,6 +23,20 @@ def read_theatres(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 @router.get("/city/{city_name}", response_model=List[schemas.TheatreResponse])
 def read_theatres_by_city(city_name: str, db: Session = Depends(get_db)):
     return crud_theatre.get_theatres_by_city(db, city=city_name)
+
+
+@router.get("/{theatre_id}/movies", response_model=List[schemas.MovieResponse])
+def read_theatre_movies(theatre_id: int, db: Session = Depends(get_db)):
+    return crud_theatre.get_movies_by_theatre(db, theatre_id=theatre_id)
+
+
+@router.get("/{theatre_id}/schedule", response_model=List[schemas.ShowDetailResponse])
+def read_theatre_schedule(
+    theatre_id: int, target_date: date, db: Session = Depends(get_db)
+):
+    return crud_show.get_shows_by_theatre_and_date(
+        db, theatre_id=theatre_id, target_date=target_date
+    )
 
 
 @router.get("/{theatre_id}", response_model=schemas.TheatreResponse)

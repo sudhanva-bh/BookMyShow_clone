@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, cast, Date
 from app import models, schemas
 import string
+from datetime import date
 
 # -------------------- SHOW OPERATIONS --------------------
 
@@ -87,6 +88,53 @@ def get_shows_by_screen(db: Session, screen_id: int):
         .options(joinedload(models.Show.movie))
         .filter(models.Show.screen_id == screen_id)
         .order_by(models.Show.show_time.asc())
+        .all()
+    )
+
+
+def get_shows_by_theatre_and_date(db: Session, theatre_id: int, target_date: date):
+    return (
+        db.query(models.Show)
+        .options(joinedload(models.Show.movie), joinedload(models.Show.screen))
+        .join(models.Screen)
+        .filter(
+            models.Screen.theatre_id == theatre_id,
+            cast(models.Show.show_time, Date) == target_date,
+        )
+        .order_by(models.Show.show_time.asc())
+        .all()
+    )
+
+
+def get_city_shows_by_date(db: Session, city: str, target_date: date):
+    return (
+        db.query(models.Show)
+        .options(
+            joinedload(models.Show.movie),
+            joinedload(models.Show.screen).joinedload(models.Screen.theatre),
+        )
+        .join(models.Screen)
+        .join(models.Theatre)
+        .filter(
+            models.Theatre.city.ilike(city),
+            cast(models.Show.show_time, Date) == target_date,
+        )
+        .order_by(models.Show.show_time.asc())
+        .all()
+    )
+
+
+def get_movies_by_date(db: Session, city: str, target_date: date):
+    return (
+        db.query(models.Movie)
+        .join(models.Show)
+        .join(models.Screen)
+        .join(models.Theatre)
+        .filter(
+            models.Theatre.city.ilike(city),
+            cast(models.Show.show_time, Date) == target_date,
+        )
+        .distinct()
         .all()
     )
 

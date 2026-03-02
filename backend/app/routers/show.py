@@ -4,6 +4,7 @@ from typing import List
 from app import schemas
 from app.crud import show as crud_show
 from app.database import get_db
+from datetime import date
 
 router = APIRouter(prefix="/shows", tags=["Shows"])
 
@@ -42,6 +43,16 @@ def read_shows_by_screen(screen_id: int, db: Session = Depends(get_db)):
     if db_screen is None:
         raise HTTPException(status_code=404, detail="Screen not found")
     return crud_show.get_shows_by_screen(db, screen_id=screen_id)
+
+
+@router.get("/city-schedule", response_model=List[schemas.ShowDetailResponse])
+def read_city_schedule(city: str, target_date: date, db: Session = Depends(get_db)):
+    return crud_show.get_city_shows_by_date(db, city=city, target_date=target_date)
+
+
+@router.get("/movies-by-date", response_model=List[schemas.MovieResponse])
+def read_movies_by_date(city: str, target_date: date, db: Session = Depends(get_db)):
+    return crud_show.get_movies_by_date(db, city=city, target_date=target_date)
 
 
 @router.delete("/{show_id}", status_code=204)

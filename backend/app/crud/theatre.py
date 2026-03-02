@@ -18,6 +18,17 @@ def get_theatres_by_city(db: Session, city: str):
     return db.query(models.Theatre).filter(models.Theatre.city.ilike(city)).all()
 
 
+def get_movies_by_theatre(db: Session, theatre_id: int):
+    return (
+        db.query(models.Movie)
+        .join(models.Show)
+        .join(models.Screen)
+        .filter(models.Screen.theatre_id == theatre_id)
+        .distinct()
+        .all()
+    )
+
+
 def create_theatre(db: Session, theatre: schemas.TheatreCreate):
     db_theatre = models.Theatre(
         name=theatre.name, location=theatre.location, city=theatre.city
