@@ -14,6 +14,11 @@ def get_theatres(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Theatre).offset(skip).limit(limit).all()
 
 
+def get_all_cities(db: Session):
+    cities = db.query(models.Theatre.city).distinct().all()
+    return [city[0] for city in cities if city[0]]
+
+
 def get_theatres_by_city(db: Session, city: str):
     return db.query(models.Theatre).filter(models.Theatre.city.ilike(city)).all()
 

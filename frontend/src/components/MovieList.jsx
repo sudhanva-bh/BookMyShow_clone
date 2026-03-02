@@ -4,22 +4,30 @@ import { Search, Globe, Clock, Calendar, Ticket, X, MapPin } from 'lucide-react'
 
 const MovieList = ({ onSelectMovie }) => {
   const [movies, setMovies] = useState([]);
+  const [availableCities, setAvailableCities] = useState([]);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [languageFilter, setLanguageFilter] = useState('');
   const [certFilter, setCertFilter] = useState('');
   const [cityFilter, setCityFilter] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
 
+  // Fetch available cities on component mount
+  useEffect(() => {
+    api.get('/theatres/cities')
+      .then(res => setAvailableCities(res.data))
+      .catch(console.error);
+  }, []);
+
+  // Fetch movies when city filter changes
   useEffect(() => {
     fetchMovies();
-  }, [cityFilter, dateFilter]); // Auto-fetch when discovery filters change
+  }, [cityFilter]);
 
   const fetchMovies = async () => {
     try {
-      if (cityFilter && dateFilter) {
-        // Feature: City-Wide Movie List
-        const res = await api.get('/shows/movies-by-date', {
-          params: { city: cityFilter, date: dateFilter }
+      if (cityFilter) {
+        const res = await api.get('/shows/movies-by-city', {
+          params: { city: cityFilter }
         });
         setMovies(res.data);
       } else {
@@ -56,23 +64,20 @@ const MovieList = ({ onSelectMovie }) => {
           />
         </div>
 
-        {/* New discovery inputs for backend endpoints */}
+        {/* Updated City Filter to be a Select Dropdown */}
         <div style={locationWrapper}>
           <MapPin size={18} color="#666" style={searchIcon} />
-          <input 
-            style={searchInput} 
-            type="text" 
-            placeholder="City (e.g. Mumbai)" 
+          <select 
+            style={selectInputWithIcon}
             value={cityFilter}
             onChange={(e) => setCityFilter(e.target.value)}
-          />
+          >
+            <option value="">All Cities</option>
+            {availableCities.map(city => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
         </div>
-        <input 
-          style={{ ...selectInput, colorScheme: "dark" }} 
-          type="date" 
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-        />
         
         <select style={selectInput} value={languageFilter} onChange={(e) => setLanguageFilter(e.target.value)}>
           <option value="">All Languages</option>
@@ -84,8 +89,8 @@ const MovieList = ({ onSelectMovie }) => {
           {uniqueCerts.map(cert => <option key={cert} value={cert}>{cert}</option>)}
         </select>
         
-        {(searchTerm || languageFilter || certFilter || cityFilter || dateFilter) && (
-          <button style={clearBtn} onClick={() => { setSearchTerm(''); setLanguageFilter(''); setCertFilter(''); setCityFilter(''); setDateFilter(''); }}>
+        {(searchTerm || languageFilter || certFilter || cityFilter) && (
+          <button style={clearBtn} onClick={() => { setSearchTerm(''); setLanguageFilter(''); setCertFilter(''); setCityFilter(''); }}>
             <X size={16} />
           </button>
         )}
@@ -126,6 +131,7 @@ const searchWrapper = { position: 'relative', flex: 2, minWidth: '180px' };
 const locationWrapper = { position: 'relative', flex: 1, minWidth: '150px' };
 const searchIcon = { position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' };
 const searchInput = { width: '100%', padding: '10px 10px 10px 38px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', boxSizing: 'border-box' };
+const selectInputWithIcon = { width: '100%', padding: '10px 10px 10px 38px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', cursor: 'pointer', appearance: 'none' };
 const selectInput = { flex: 1, minWidth: '130px', padding: '10px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', cursor: 'pointer' };
 const clearBtn = { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px', background: 'transparent', border: '1px solid #333', color: '#888', borderRadius: '6px', cursor: 'pointer' };
 

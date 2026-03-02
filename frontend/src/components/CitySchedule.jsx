@@ -1,58 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../services/api";
-import { Search, MapPin, MonitorPlay, Film } from "lucide-react";
+import { MapPin, MonitorPlay, Film, CalendarDays } from "lucide-react";
 
 const CitySchedule = ({ onSelectShow }) => {
+  const [availableCities, setAvailableCities] = useState([]);
   const [city, setCity] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!city || !date) return;
-    setLoading(true);
-    setSearched(true);
-    try {
-      const res = await api.get("/shows/city-schedule", { params: { city, date } });
-      setSchedule(res.data);
-    } catch (err) {
-      console.error(err);
-      setSchedule([]);
-    } finally {
-      setLoading(false);
+  // Fetch available cities on component mount
+  useEffect(() => {
+    api.get('/theatres/cities')
+      .then(res => setAvailableCities(res.data))
+      .catch(console.error);
+  }, []);
+
+  // Fetch schedule automatically when a city is selected
+  useEffect(() => {
+    if (city) {
+      setLoading(true);
+      api.get("/shows/city-schedule-all", { params: { city } })
+        .then(res => setSchedule(res.data))
+        .catch(err => {
+          console.error(err);
+          setSchedule([]);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setSchedule([]); // Clear schedule if no city is selected
     }
-  };
+  }, [city]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <form onSubmit={handleSearch} style={{ display: "flex", gap: "10px", marginBottom: "25px", flexWrap: "wrap" }}>
-        <input
-          type="text"
-          placeholder="Enter City Name (e.g. Hyderabad)"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          style={inputStyle}
-          required
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          style={{ ...inputStyle, minWidth: "150px" }}
-          required
-        />
-        <button type="submit" style={searchBtn}>
-          <Search size={16} /> Load City Schedule
-        </button>
-      </form>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "25px", flexWrap: "wrap", alignItems: "center" }}>
+        <div style={locationWrapper}>
+          <MapPin size={18} color="#666" style={searchIcon} />
+          <select 
+            style={selectInputWithIcon}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          >
+            <option value="">Select a City...</option>
+            {availableCities.map(c => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       <div style={{ flex: 1, overflowY: "auto", paddingRight: "10px" }}>
-        {loading ? (
+        {!city ? (
+          <p style={placeholderText}>Please select a city to view its master schedule.</p>
+        ) : loading ? (
           <p style={{ color: "#888" }}>Loading master schedule for {city}...</p>
-        ) : searched && schedule.length === 0 ? (
-          <p style={{ color: "#666" }}>No shows found in {city} on this date.</p>
+        ) : schedule.length === 0 ? (
+          <p style={{ color: "#666" }}>No shows found in {city}.</p>
         ) : (
           schedule.map(show => (
             <div key={show.show_id} style={cardStyle}>
@@ -60,9 +63,14 @@ const CitySchedule = ({ onSelectShow }) => {
                 <h3 style={{ margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px", fontSize: "1.1rem" }}>
                   <Film size={18} color="#f3ce00" /> {show.movie?.title || `Movie ID: ${show.movie_id}`}
                 </h3>
-                <span style={{ color: "#4caf50", fontWeight: "bold", fontSize: "1.1rem" }}>
-                  {new Date(show.show_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ color: "#4caf50", fontWeight: "bold", fontSize: "1.1rem", display: "block" }}>
+                    {new Date(show.show_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  <span style={{ color: "#aaa", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "4px", justifyContent: "flex-end", marginTop: "4px" }}>
+                     <CalendarDays size={12}/> {new Date(show.show_time).toLocaleDateString([], { month: 'short', day: 'numeric', weekday: 'short' })}
+                  </span>
+                </div>
               </div>
               
               <p style={{ margin: "0 0 12px 0", color: "#ccc", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.95rem" }}>
@@ -93,8 +101,11 @@ const CitySchedule = ({ onSelectShow }) => {
 };
 
 // --- Styles ---
-const inputStyle = { padding: "10px", background: "#1a1a1a", border: "1px solid #333", color: "#fff", borderRadius: "6px", minWidth: "220px", colorScheme: "dark" };
-const searchBtn = { display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", background: "#f3ce00", color: "#000", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" };
+const locationWrapper = { position: 'relative', flex: 1, maxWidth: '400px' };
+const searchIcon = { position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' };
+const selectInputWithIcon = { width: '100%', padding: '12px 12px 12px 38px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', cursor: 'pointer', appearance: 'none', fontSize: "1rem" };
+const placeholderText = { color: "#666", textAlign: "center", padding: "40px 0", fontSize: "1.1rem" };
+
 const cardStyle = { background: "#111", border: "1px solid #222", borderRadius: "8px", padding: "20px", marginBottom: "15px", transition: "border-color 0.2s" };
 const bookBtn = { padding: "8px 16px", background: "transparent", border: "1px solid #f3ce00", color: "#f3ce00", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", transition: "0.2s" };
 

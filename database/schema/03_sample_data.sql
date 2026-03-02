@@ -11,44 +11,135 @@ INSERT INTO "user" (name, email, phone) VALUES
 ('Rohan Kapoor', 'rohan.k@example.com', '9876543209'),
 ('Pooja Joshi', 'pooja.j@example.com', '9876543210');
 
--- 2. SEED DATA: THEATRES (Independent)
+-- 2. SEED DATA: THEATRES (8 Theatres across 4 Cities)
 INSERT INTO theatre (name, location, city) VALUES
 ('AMB Cinemas', 'Sarath City Capital Mall, Kondapur', 'Hyderabad'),
 ('Prasads Multiplex', 'NTR Marg, Central Secretariat', 'Hyderabad'),
-('PVR Inorbit', 'Inorbit Mall, Cyberabad', 'Hyderabad'),
-('Asian Shiva Shakti', 'Kompally Road, Shamirpet', 'Hyderabad');
+('PVR Juhu', 'Dynamix Mall, Juhu', 'Mumbai'),
+('INOX Nariman Point', 'CR2 Mall, Nariman Point', 'Mumbai'),
+('PVR Forum', 'Forum Mall, Koramangala', 'Bangalore'),
+('Cinepolis Orion', 'Orion Mall, Rajajinagar', 'Bangalore'),
+('PVR Select Citywalk', 'Select Citywalk Mall, Saket', 'Delhi'),
+('INOX Nehru Place', 'Epicuria, Nehru Place', 'Delhi');
 
--- 3. SEED DATA: MOVIES (Independent)
+-- 3. SEED DATA: MOVIES (Exactly 12 Movies across 4 Languages)
 INSERT INTO movie (title, language, duration_mins, release_date, certificate) VALUES
+-- English
 ('Inception', 'English', 148, '2010-07-16', 'UA'),
 ('Interstellar', 'English', 169, '2014-11-07', 'U'),
-('RRR', 'Telugu', 187, '2022-03-25', 'UA'),
-('Kalki 2898 AD', 'Telugu', 181, '2024-06-27', 'UA'),
 ('The Dark Knight', 'English', 152, '2008-07-18', 'UA'),
-('Pushpa: The Rise', 'Telugu', 179, '2021-12-17', 'UA'),
+-- Hindi
 ('Dangal', 'Hindi', 161, '2016-12-23', 'U'),
-('KGF: Chapter 2', 'Kannada', 168, '2022-04-14', 'UA'),
-('Parasite', 'Korean', 132, '2019-05-30', 'A'),
-('Jawan', 'Hindi', 169, '2023-09-07', 'UA');
+('Jawan', 'Hindi', 169, '2023-09-07', 'UA'),
+('3 Idiots', 'Hindi', 170, '2009-12-25', 'U'),
+-- Telugu
+('RRR', 'Telugu', 187, '2022-03-25', 'UA'),
+('Baahubali: The Conclusion', 'Telugu', 167, '2017-04-28', 'UA'),
+('Kalki 2898 AD', 'Telugu', 181, '2024-06-27', 'UA'),
+-- Tamil
+('Leo', 'Tamil', 164, '2023-10-19', 'UA'),
+('Vikram', 'Tamil', 173, '2022-06-03', 'UA'),
+('Jailer', 'Tamil', 168, '2023-08-10', 'UA');
 
--- 4. SEED DATA: SCREENS
+-- 4. SEED DATA: SCREENS (12 Screens Total)
 INSERT INTO screen (theatre_id, screen_name, rows, cols) VALUES
--- Theatre 1: AMB Cinemas (theatre_id = 1)
-(1, 'Screen 1', 10, 25),
-(1, 'Screen 2', 10, 22),
-(1, 'IMAX', 15, 20),
+(1, 'Screen 1', 10, 20), (1, 'Screen 2', 10, 20), -- AMB Cinemas (Hyd)
+(2, 'IMAX', 15, 25),                              -- Prasads (Hyd)
+(3, 'Screen 1', 10, 20), (3, 'Screen 2', 10, 20), -- PVR Juhu (Mumbai)
+(4, 'Screen 1', 12, 22),                          -- INOX Nariman (Mumbai)
+(5, 'Screen 1', 10, 20), (5, 'Screen 2', 10, 20), -- PVR Forum (Bangalore)
+(6, 'Screen 1', 10, 20),                          -- Cinepolis Orion (Bangalore)
+(7, 'Screen 1', 14, 24), (7, 'Screen 2', 10, 20), -- PVR Select Citywalk (Delhi)
+(8, 'Screen 1', 10, 20);                          -- INOX Nehru Place (Delhi)
 
--- Theatre 2: Prasads Multiplex (theatre_id = 2)
-(2, 'Screen 1', 14, 20),
-(2, 'Screen 2', 10, 20),
-(2, 'Screen 3', 10, 18),
-(2, 'Large Format', 16, 20),
 
--- Theatre 3: PVR Inorbit (theatre_id = 3)
-(3, 'Screen 1', 10, 21),
-(3, 'Screen 2', 10, 19),
-(3, 'Screen 3', 10, 17),
+-- 5. SEED DATA: SHOWS (288 Shows spanning 6 Days)
+-- Show times structured at 09:30, 13:15, 17:00, 20:45 to prevent 3-hour constraint overlap
+INSERT INTO show (movie_id, screen_id, show_time, seat_price, rows, cols) VALUES
+-- ================== DAY 1 (48 Shows) ==================
+-- 09:30 AM Slot
+(1, 1, CURRENT_DATE + INTERVAL '1 day 09:30:00', 200, 10, 20), (2, 2, CURRENT_DATE + INTERVAL '1 day 09:30:00', 200, 10, 20), (3, 3, CURRENT_DATE + INTERVAL '1 day 09:30:00', 350, 15, 25), (4, 4, CURRENT_DATE + INTERVAL '1 day 09:30:00', 220, 10, 20),
+(5, 5, CURRENT_DATE + INTERVAL '1 day 09:30:00', 220, 10, 20), (6, 6, CURRENT_DATE + INTERVAL '1 day 09:30:00', 250, 12, 22), (7, 7, CURRENT_DATE + INTERVAL '1 day 09:30:00', 200, 10, 20), (8, 8, CURRENT_DATE + INTERVAL '1 day 09:30:00', 200, 10, 20),
+(9, 9, CURRENT_DATE + INTERVAL '1 day 09:30:00', 200, 10, 20), (10,10, CURRENT_DATE + INTERVAL '1 day 09:30:00', 300, 14, 24), (11,11, CURRENT_DATE + INTERVAL '1 day 09:30:00', 250, 10, 20), (12,12, CURRENT_DATE + INTERVAL '1 day 09:30:00', 200, 10, 20),
+-- 01:15 PM Slot
+(2, 1, CURRENT_DATE + INTERVAL '1 day 13:15:00', 250, 10, 20), (3, 2, CURRENT_DATE + INTERVAL '1 day 13:15:00', 250, 10, 20), (4, 3, CURRENT_DATE + INTERVAL '1 day 13:15:00', 400, 15, 25), (5, 4, CURRENT_DATE + INTERVAL '1 day 13:15:00', 280, 10, 20),
+(6, 5, CURRENT_DATE + INTERVAL '1 day 13:15:00', 280, 10, 20), (7, 6, CURRENT_DATE + INTERVAL '1 day 13:15:00', 300, 12, 22), (8, 7, CURRENT_DATE + INTERVAL '1 day 13:15:00', 250, 10, 20), (9, 8, CURRENT_DATE + INTERVAL '1 day 13:15:00', 250, 10, 20),
+(10,9, CURRENT_DATE + INTERVAL '1 day 13:15:00', 250, 10, 20), (11,10, CURRENT_DATE + INTERVAL '1 day 13:15:00', 350, 14, 24), (12,11, CURRENT_DATE + INTERVAL '1 day 13:15:00', 300, 10, 20), (1, 12, CURRENT_DATE + INTERVAL '1 day 13:15:00', 250, 10, 20),
+-- 05:00 PM Slot
+(3, 1, CURRENT_DATE + INTERVAL '1 day 17:00:00', 300, 10, 20), (4, 2, CURRENT_DATE + INTERVAL '1 day 17:00:00', 300, 10, 20), (5, 3, CURRENT_DATE + INTERVAL '1 day 17:00:00', 450, 15, 25), (6, 4, CURRENT_DATE + INTERVAL '1 day 17:00:00', 320, 10, 20),
+(7, 5, CURRENT_DATE + INTERVAL '1 day 17:00:00', 320, 10, 20), (8, 6, CURRENT_DATE + INTERVAL '1 day 17:00:00', 350, 12, 22), (9, 7, CURRENT_DATE + INTERVAL '1 day 17:00:00', 300, 10, 20), (10,8, CURRENT_DATE + INTERVAL '1 day 17:00:00', 300, 10, 20),
+(11,9, CURRENT_DATE + INTERVAL '1 day 17:00:00', 300, 10, 20), (12,10, CURRENT_DATE + INTERVAL '1 day 17:00:00', 400, 14, 24), (1, 11, CURRENT_DATE + INTERVAL '1 day 17:00:00', 350, 10, 20), (2, 12, CURRENT_DATE + INTERVAL '1 day 17:00:00', 300, 10, 20),
+-- 08:45 PM Slot
+(4, 1, CURRENT_DATE + INTERVAL '1 day 20:45:00', 300, 10, 20), (5, 2, CURRENT_DATE + INTERVAL '1 day 20:45:00', 300, 10, 20), (6, 3, CURRENT_DATE + INTERVAL '1 day 20:45:00', 450, 15, 25), (7, 4, CURRENT_DATE + INTERVAL '1 day 20:45:00', 320, 10, 20),
+(8, 5, CURRENT_DATE + INTERVAL '1 day 20:45:00', 320, 10, 20), (9, 6, CURRENT_DATE + INTERVAL '1 day 20:45:00', 350, 12, 22), (10,7, CURRENT_DATE + INTERVAL '1 day 20:45:00', 300, 10, 20), (11,8, CURRENT_DATE + INTERVAL '1 day 20:45:00', 300, 10, 20),
+(12,9, CURRENT_DATE + INTERVAL '1 day 20:45:00', 300, 10, 20), (1, 10, CURRENT_DATE + INTERVAL '1 day 20:45:00', 400, 14, 24), (2, 11, CURRENT_DATE + INTERVAL '1 day 20:45:00', 350, 10, 20), (3, 12, CURRENT_DATE + INTERVAL '1 day 20:45:00', 300, 10, 20),
 
--- Theatre 4: Asian Shiva Shakti (theatre_id = 4)
-(4, 'Screen 1', 10, 23),
-(4, 'Screen 2', 10, 20);
+-- ================== DAY 2 (48 Shows) ==================
+(2, 1, CURRENT_DATE + INTERVAL '2 days 09:30:00', 200, 10, 20), (3, 2, CURRENT_DATE + INTERVAL '2 days 09:30:00', 200, 10, 20), (4, 3, CURRENT_DATE + INTERVAL '2 days 09:30:00', 350, 15, 25), (5, 4, CURRENT_DATE + INTERVAL '2 days 09:30:00', 220, 10, 20),
+(6, 5, CURRENT_DATE + INTERVAL '2 days 09:30:00', 220, 10, 20), (7, 6, CURRENT_DATE + INTERVAL '2 days 09:30:00', 250, 12, 22), (8, 7, CURRENT_DATE + INTERVAL '2 days 09:30:00', 200, 10, 20), (9, 8, CURRENT_DATE + INTERVAL '2 days 09:30:00', 200, 10, 20),
+(10,9, CURRENT_DATE + INTERVAL '2 days 09:30:00', 200, 10, 20), (11,10, CURRENT_DATE + INTERVAL '2 days 09:30:00', 300, 14, 24), (12,11, CURRENT_DATE + INTERVAL '2 days 09:30:00', 250, 10, 20), (1, 12, CURRENT_DATE + INTERVAL '2 days 09:30:00', 200, 10, 20),
+(3, 1, CURRENT_DATE + INTERVAL '2 days 13:15:00', 250, 10, 20), (4, 2, CURRENT_DATE + INTERVAL '2 days 13:15:00', 250, 10, 20), (5, 3, CURRENT_DATE + INTERVAL '2 days 13:15:00', 400, 15, 25), (6, 4, CURRENT_DATE + INTERVAL '2 days 13:15:00', 280, 10, 20),
+(7, 5, CURRENT_DATE + INTERVAL '2 days 13:15:00', 280, 10, 20), (8, 6, CURRENT_DATE + INTERVAL '2 days 13:15:00', 300, 12, 22), (9, 7, CURRENT_DATE + INTERVAL '2 days 13:15:00', 250, 10, 20), (10,8, CURRENT_DATE + INTERVAL '2 days 13:15:00', 250, 10, 20),
+(11,9, CURRENT_DATE + INTERVAL '2 days 13:15:00', 250, 10, 20), (12,10, CURRENT_DATE + INTERVAL '2 days 13:15:00', 350, 14, 24), (1, 11, CURRENT_DATE + INTERVAL '2 days 13:15:00', 300, 10, 20), (2, 12, CURRENT_DATE + INTERVAL '2 days 13:15:00', 250, 10, 20),
+(4, 1, CURRENT_DATE + INTERVAL '2 days 17:00:00', 300, 10, 20), (5, 2, CURRENT_DATE + INTERVAL '2 days 17:00:00', 300, 10, 20), (6, 3, CURRENT_DATE + INTERVAL '2 days 17:00:00', 450, 15, 25), (7, 4, CURRENT_DATE + INTERVAL '2 days 17:00:00', 320, 10, 20),
+(8, 5, CURRENT_DATE + INTERVAL '2 days 17:00:00', 320, 10, 20), (9, 6, CURRENT_DATE + INTERVAL '2 days 17:00:00', 350, 12, 22), (10,7, CURRENT_DATE + INTERVAL '2 days 17:00:00', 300, 10, 20), (11,8, CURRENT_DATE + INTERVAL '2 days 17:00:00', 300, 10, 20),
+(12,9, CURRENT_DATE + INTERVAL '2 days 17:00:00', 300, 10, 20), (1, 10, CURRENT_DATE + INTERVAL '2 days 17:00:00', 400, 14, 24), (2, 11, CURRENT_DATE + INTERVAL '2 days 17:00:00', 350, 10, 20), (3, 12, CURRENT_DATE + INTERVAL '2 days 17:00:00', 300, 10, 20),
+(5, 1, CURRENT_DATE + INTERVAL '2 days 20:45:00', 300, 10, 20), (6, 2, CURRENT_DATE + INTERVAL '2 days 20:45:00', 300, 10, 20), (7, 3, CURRENT_DATE + INTERVAL '2 days 20:45:00', 450, 15, 25), (8, 4, CURRENT_DATE + INTERVAL '2 days 20:45:00', 320, 10, 20),
+(9, 5, CURRENT_DATE + INTERVAL '2 days 20:45:00', 320, 10, 20), (10,6, CURRENT_DATE + INTERVAL '2 days 20:45:00', 350, 12, 22), (11,7, CURRENT_DATE + INTERVAL '2 days 20:45:00', 300, 10, 20), (12,8, CURRENT_DATE + INTERVAL '2 days 20:45:00', 300, 10, 20),
+(1, 9, CURRENT_DATE + INTERVAL '2 days 20:45:00', 300, 10, 20), (2, 10, CURRENT_DATE + INTERVAL '2 days 20:45:00', 400, 14, 24), (3, 11, CURRENT_DATE + INTERVAL '2 days 20:45:00', 350, 10, 20), (4, 12, CURRENT_DATE + INTERVAL '2 days 20:45:00', 300, 10, 20),
+
+-- ================== DAY 3 (48 Shows) ==================
+(3, 1, CURRENT_DATE + INTERVAL '3 days 09:30:00', 200, 10, 20), (4, 2, CURRENT_DATE + INTERVAL '3 days 09:30:00', 200, 10, 20), (5, 3, CURRENT_DATE + INTERVAL '3 days 09:30:00', 350, 15, 25), (6, 4, CURRENT_DATE + INTERVAL '3 days 09:30:00', 220, 10, 20),
+(7, 5, CURRENT_DATE + INTERVAL '3 days 09:30:00', 220, 10, 20), (8, 6, CURRENT_DATE + INTERVAL '3 days 09:30:00', 250, 12, 22), (9, 7, CURRENT_DATE + INTERVAL '3 days 09:30:00', 200, 10, 20), (10,8, CURRENT_DATE + INTERVAL '3 days 09:30:00', 200, 10, 20),
+(11,9, CURRENT_DATE + INTERVAL '3 days 09:30:00', 200, 10, 20), (12,10, CURRENT_DATE + INTERVAL '3 days 09:30:00', 300, 14, 24), (1, 11, CURRENT_DATE + INTERVAL '3 days 09:30:00', 250, 10, 20), (2, 12, CURRENT_DATE + INTERVAL '3 days 09:30:00', 200, 10, 20),
+(4, 1, CURRENT_DATE + INTERVAL '3 days 13:15:00', 250, 10, 20), (5, 2, CURRENT_DATE + INTERVAL '3 days 13:15:00', 250, 10, 20), (6, 3, CURRENT_DATE + INTERVAL '3 days 13:15:00', 400, 15, 25), (7, 4, CURRENT_DATE + INTERVAL '3 days 13:15:00', 280, 10, 20),
+(8, 5, CURRENT_DATE + INTERVAL '3 days 13:15:00', 280, 10, 20), (9, 6, CURRENT_DATE + INTERVAL '3 days 13:15:00', 300, 12, 22), (10,7, CURRENT_DATE + INTERVAL '3 days 13:15:00', 250, 10, 20), (11,8, CURRENT_DATE + INTERVAL '3 days 13:15:00', 250, 10, 20),
+(12,9, CURRENT_DATE + INTERVAL '3 days 13:15:00', 250, 10, 20), (1, 10, CURRENT_DATE + INTERVAL '3 days 13:15:00', 350, 14, 24), (2, 11, CURRENT_DATE + INTERVAL '3 days 13:15:00', 300, 10, 20), (3, 12, CURRENT_DATE + INTERVAL '3 days 13:15:00', 250, 10, 20),
+(5, 1, CURRENT_DATE + INTERVAL '3 days 17:00:00', 300, 10, 20), (6, 2, CURRENT_DATE + INTERVAL '3 days 17:00:00', 300, 10, 20), (7, 3, CURRENT_DATE + INTERVAL '3 days 17:00:00', 450, 15, 25), (8, 4, CURRENT_DATE + INTERVAL '3 days 17:00:00', 320, 10, 20),
+(9, 5, CURRENT_DATE + INTERVAL '3 days 17:00:00', 320, 10, 20), (10,6, CURRENT_DATE + INTERVAL '3 days 17:00:00', 350, 12, 22), (11,7, CURRENT_DATE + INTERVAL '3 days 17:00:00', 300, 10, 20), (12,8, CURRENT_DATE + INTERVAL '3 days 17:00:00', 300, 10, 20),
+(1, 9, CURRENT_DATE + INTERVAL '3 days 17:00:00', 300, 10, 20), (2, 10, CURRENT_DATE + INTERVAL '3 days 17:00:00', 400, 14, 24), (3, 11, CURRENT_DATE + INTERVAL '3 days 17:00:00', 350, 10, 20), (4, 12, CURRENT_DATE + INTERVAL '3 days 17:00:00', 300, 10, 20),
+(6, 1, CURRENT_DATE + INTERVAL '3 days 20:45:00', 300, 10, 20), (7, 2, CURRENT_DATE + INTERVAL '3 days 20:45:00', 300, 10, 20), (8, 3, CURRENT_DATE + INTERVAL '3 days 20:45:00', 450, 15, 25), (9, 4, CURRENT_DATE + INTERVAL '3 days 20:45:00', 320, 10, 20),
+(10,5, CURRENT_DATE + INTERVAL '3 days 20:45:00', 320, 10, 20), (11,6, CURRENT_DATE + INTERVAL '3 days 20:45:00', 350, 12, 22), (12,7, CURRENT_DATE + INTERVAL '3 days 20:45:00', 300, 10, 20), (1, 8, CURRENT_DATE + INTERVAL '3 days 20:45:00', 300, 10, 20),
+(2, 9, CURRENT_DATE + INTERVAL '3 days 20:45:00', 300, 10, 20), (3, 10, CURRENT_DATE + INTERVAL '3 days 20:45:00', 400, 14, 24), (4, 11, CURRENT_DATE + INTERVAL '3 days 20:45:00', 350, 10, 20), (5, 12, CURRENT_DATE + INTERVAL '3 days 20:45:00', 300, 10, 20),
+
+-- ================== DAY 4 (48 Shows) ==================
+(4, 1, CURRENT_DATE + INTERVAL '4 days 09:30:00', 200, 10, 20), (5, 2, CURRENT_DATE + INTERVAL '4 days 09:30:00', 200, 10, 20), (6, 3, CURRENT_DATE + INTERVAL '4 days 09:30:00', 350, 15, 25), (7, 4, CURRENT_DATE + INTERVAL '4 days 09:30:00', 220, 10, 20),
+(8, 5, CURRENT_DATE + INTERVAL '4 days 09:30:00', 220, 10, 20), (9, 6, CURRENT_DATE + INTERVAL '4 days 09:30:00', 250, 12, 22), (10,7, CURRENT_DATE + INTERVAL '4 days 09:30:00', 200, 10, 20), (11,8, CURRENT_DATE + INTERVAL '4 days 09:30:00', 200, 10, 20),
+(12,9, CURRENT_DATE + INTERVAL '4 days 09:30:00', 200, 10, 20), (1, 10, CURRENT_DATE + INTERVAL '4 days 09:30:00', 300, 14, 24), (2, 11, CURRENT_DATE + INTERVAL '4 days 09:30:00', 250, 10, 20), (3, 12, CURRENT_DATE + INTERVAL '4 days 09:30:00', 200, 10, 20),
+(5, 1, CURRENT_DATE + INTERVAL '4 days 13:15:00', 250, 10, 20), (6, 2, CURRENT_DATE + INTERVAL '4 days 13:15:00', 250, 10, 20), (7, 3, CURRENT_DATE + INTERVAL '4 days 13:15:00', 400, 15, 25), (8, 4, CURRENT_DATE + INTERVAL '4 days 13:15:00', 280, 10, 20),
+(9, 5, CURRENT_DATE + INTERVAL '4 days 13:15:00', 280, 10, 20), (10,6, CURRENT_DATE + INTERVAL '4 days 13:15:00', 300, 12, 22), (11,7, CURRENT_DATE + INTERVAL '4 days 13:15:00', 250, 10, 20), (12,8, CURRENT_DATE + INTERVAL '4 days 13:15:00', 250, 10, 20),
+(1, 9, CURRENT_DATE + INTERVAL '4 days 13:15:00', 250, 10, 20), (2, 10, CURRENT_DATE + INTERVAL '4 days 13:15:00', 350, 14, 24), (3, 11, CURRENT_DATE + INTERVAL '4 days 13:15:00', 300, 10, 20), (4, 12, CURRENT_DATE + INTERVAL '4 days 13:15:00', 250, 10, 20),
+(6, 1, CURRENT_DATE + INTERVAL '4 days 17:00:00', 300, 10, 20), (7, 2, CURRENT_DATE + INTERVAL '4 days 17:00:00', 300, 10, 20), (8, 3, CURRENT_DATE + INTERVAL '4 days 17:00:00', 450, 15, 25), (9, 4, CURRENT_DATE + INTERVAL '4 days 17:00:00', 320, 10, 20),
+(10,5, CURRENT_DATE + INTERVAL '4 days 17:00:00', 320, 10, 20), (11,6, CURRENT_DATE + INTERVAL '4 days 17:00:00', 350, 12, 22), (12,7, CURRENT_DATE + INTERVAL '4 days 17:00:00', 300, 10, 20), (1, 8, CURRENT_DATE + INTERVAL '4 days 17:00:00', 300, 10, 20),
+(2, 9, CURRENT_DATE + INTERVAL '4 days 17:00:00', 300, 10, 20), (3, 10, CURRENT_DATE + INTERVAL '4 days 17:00:00', 400, 14, 24), (4, 11, CURRENT_DATE + INTERVAL '4 days 17:00:00', 350, 10, 20), (5, 12, CURRENT_DATE + INTERVAL '4 days 17:00:00', 300, 10, 20),
+(7, 1, CURRENT_DATE + INTERVAL '4 days 20:45:00', 300, 10, 20), (8, 2, CURRENT_DATE + INTERVAL '4 days 20:45:00', 300, 10, 20), (9, 3, CURRENT_DATE + INTERVAL '4 days 20:45:00', 450, 15, 25), (10,4, CURRENT_DATE + INTERVAL '4 days 20:45:00', 320, 10, 20),
+(11,5, CURRENT_DATE + INTERVAL '4 days 20:45:00', 320, 10, 20), (12,6, CURRENT_DATE + INTERVAL '4 days 20:45:00', 350, 12, 22), (1, 7, CURRENT_DATE + INTERVAL '4 days 20:45:00', 300, 10, 20), (2, 8, CURRENT_DATE + INTERVAL '4 days 20:45:00', 300, 10, 20),
+(3, 9, CURRENT_DATE + INTERVAL '4 days 20:45:00', 300, 10, 20), (4, 10, CURRENT_DATE + INTERVAL '4 days 20:45:00', 400, 14, 24), (5, 11, CURRENT_DATE + INTERVAL '4 days 20:45:00', 350, 10, 20), (6, 12, CURRENT_DATE + INTERVAL '4 days 20:45:00', 300, 10, 20),
+
+-- ================== DAY 5 (48 Shows) ==================
+(5, 1, CURRENT_DATE + INTERVAL '5 days 09:30:00', 200, 10, 20), (6, 2, CURRENT_DATE + INTERVAL '5 days 09:30:00', 200, 10, 20), (7, 3, CURRENT_DATE + INTERVAL '5 days 09:30:00', 350, 15, 25), (8, 4, CURRENT_DATE + INTERVAL '5 days 09:30:00', 220, 10, 20),
+(9, 5, CURRENT_DATE + INTERVAL '5 days 09:30:00', 220, 10, 20), (10,6, CURRENT_DATE + INTERVAL '5 days 09:30:00', 250, 12, 22), (11,7, CURRENT_DATE + INTERVAL '5 days 09:30:00', 200, 10, 20), (12,8, CURRENT_DATE + INTERVAL '5 days 09:30:00', 200, 10, 20),
+(1, 9, CURRENT_DATE + INTERVAL '5 days 09:30:00', 200, 10, 20), (2, 10, CURRENT_DATE + INTERVAL '5 days 09:30:00', 300, 14, 24), (3, 11, CURRENT_DATE + INTERVAL '5 days 09:30:00', 250, 10, 20), (4, 12, CURRENT_DATE + INTERVAL '5 days 09:30:00', 200, 10, 20),
+(6, 1, CURRENT_DATE + INTERVAL '5 days 13:15:00', 250, 10, 20), (7, 2, CURRENT_DATE + INTERVAL '5 days 13:15:00', 250, 10, 20), (8, 3, CURRENT_DATE + INTERVAL '5 days 13:15:00', 400, 15, 25), (9, 4, CURRENT_DATE + INTERVAL '5 days 13:15:00', 280, 10, 20),
+(10,5, CURRENT_DATE + INTERVAL '5 days 13:15:00', 280, 10, 20), (11,6, CURRENT_DATE + INTERVAL '5 days 13:15:00', 300, 12, 22), (12,7, CURRENT_DATE + INTERVAL '5 days 13:15:00', 250, 10, 20), (1, 8, CURRENT_DATE + INTERVAL '5 days 13:15:00', 250, 10, 20),
+(2, 9, CURRENT_DATE + INTERVAL '5 days 13:15:00', 250, 10, 20), (3, 10, CURRENT_DATE + INTERVAL '5 days 13:15:00', 350, 14, 24), (4, 11, CURRENT_DATE + INTERVAL '5 days 13:15:00', 300, 10, 20), (5, 12, CURRENT_DATE + INTERVAL '5 days 13:15:00', 250, 10, 20),
+(7, 1, CURRENT_DATE + INTERVAL '5 days 17:00:00', 300, 10, 20), (8, 2, CURRENT_DATE + INTERVAL '5 days 17:00:00', 300, 10, 20), (9, 3, CURRENT_DATE + INTERVAL '5 days 17:00:00', 450, 15, 25), (10,4, CURRENT_DATE + INTERVAL '5 days 17:00:00', 320, 10, 20),
+(11,5, CURRENT_DATE + INTERVAL '5 days 17:00:00', 320, 10, 20), (12,6, CURRENT_DATE + INTERVAL '5 days 17:00:00', 350, 12, 22), (1, 7, CURRENT_DATE + INTERVAL '5 days 17:00:00', 300, 10, 20), (2, 8, CURRENT_DATE + INTERVAL '5 days 17:00:00', 300, 10, 20),
+(3, 9, CURRENT_DATE + INTERVAL '5 days 17:00:00', 300, 10, 20), (4, 10, CURRENT_DATE + INTERVAL '5 days 17:00:00', 400, 14, 24), (5, 11, CURRENT_DATE + INTERVAL '5 days 17:00:00', 350, 10, 20), (6, 12, CURRENT_DATE + INTERVAL '5 days 17:00:00', 300, 10, 20),
+(8, 1, CURRENT_DATE + INTERVAL '5 days 20:45:00', 300, 10, 20), (9, 2, CURRENT_DATE + INTERVAL '5 days 20:45:00', 300, 10, 20), (10,3, CURRENT_DATE + INTERVAL '5 days 20:45:00', 450, 15, 25), (11,4, CURRENT_DATE + INTERVAL '5 days 20:45:00', 320, 10, 20),
+(12,5, CURRENT_DATE + INTERVAL '5 days 20:45:00', 320, 10, 20), (1, 6, CURRENT_DATE + INTERVAL '5 days 20:45:00', 350, 12, 22), (2, 7, CURRENT_DATE + INTERVAL '5 days 20:45:00', 300, 10, 20), (3, 8, CURRENT_DATE + INTERVAL '5 days 20:45:00', 300, 10, 20),
+(4, 9, CURRENT_DATE + INTERVAL '5 days 20:45:00', 300, 10, 20), (5, 10, CURRENT_DATE + INTERVAL '5 days 20:45:00', 400, 14, 24), (6, 11, CURRENT_DATE + INTERVAL '5 days 20:45:00', 350, 10, 20), (7, 12, CURRENT_DATE + INTERVAL '5 days 20:45:00', 300, 10, 20),
+
+-- ================== DAY 6 (48 Shows) ==================
+(6, 1, CURRENT_DATE + INTERVAL '6 days 09:30:00', 200, 10, 20), (7, 2, CURRENT_DATE + INTERVAL '6 days 09:30:00', 200, 10, 20), (8, 3, CURRENT_DATE + INTERVAL '6 days 09:30:00', 350, 15, 25), (9, 4, CURRENT_DATE + INTERVAL '6 days 09:30:00', 220, 10, 20),
+(10,5, CURRENT_DATE + INTERVAL '6 days 09:30:00', 220, 10, 20), (11,6, CURRENT_DATE + INTERVAL '6 days 09:30:00', 250, 12, 22), (12,7, CURRENT_DATE + INTERVAL '6 days 09:30:00', 200, 10, 20), (1, 8, CURRENT_DATE + INTERVAL '6 days 09:30:00', 200, 10, 20),
+(2, 9, CURRENT_DATE + INTERVAL '6 days 09:30:00', 200, 10, 20), (3, 10, CURRENT_DATE + INTERVAL '6 days 09:30:00', 300, 14, 24), (4, 11, CURRENT_DATE + INTERVAL '6 days 09:30:00', 250, 10, 20), (5, 12, CURRENT_DATE + INTERVAL '6 days 09:30:00', 200, 10, 20),
+(7, 1, CURRENT_DATE + INTERVAL '6 days 13:15:00', 250, 10, 20), (8, 2, CURRENT_DATE + INTERVAL '6 days 13:15:00', 250, 10, 20), (9, 3, CURRENT_DATE + INTERVAL '6 days 13:15:00', 400, 15, 25), (10,4, CURRENT_DATE + INTERVAL '6 days 13:15:00', 280, 10, 20),
+(11,5, CURRENT_DATE + INTERVAL '6 days 13:15:00', 280, 10, 20), (12,6, CURRENT_DATE + INTERVAL '6 days 13:15:00', 300, 12, 22), (1, 7, CURRENT_DATE + INTERVAL '6 days 13:15:00', 250, 10, 20), (2, 8, CURRENT_DATE + INTERVAL '6 days 13:15:00', 250, 10, 20),
+(3, 9, CURRENT_DATE + INTERVAL '6 days 13:15:00', 250, 10, 20), (4, 10, CURRENT_DATE + INTERVAL '6 days 13:15:00', 350, 14, 24), (5, 11, CURRENT_DATE + INTERVAL '6 days 13:15:00', 300, 10, 20), (6, 12, CURRENT_DATE + INTERVAL '6 days 13:15:00', 250, 10, 20),
+(8, 1, CURRENT_DATE + INTERVAL '6 days 17:00:00', 300, 10, 20), (9, 2, CURRENT_DATE + INTERVAL '6 days 17:00:00', 300, 10, 20), (10,3, CURRENT_DATE + INTERVAL '6 days 17:00:00', 450, 15, 25), (11,4, CURRENT_DATE + INTERVAL '6 days 17:00:00', 320, 10, 20),
+(12,5, CURRENT_DATE + INTERVAL '6 days 17:00:00', 320, 10, 20), (1, 6, CURRENT_DATE + INTERVAL '6 days 17:00:00', 350, 12, 22), (2, 7, CURRENT_DATE + INTERVAL '6 days 17:00:00', 300, 10, 20), (3, 8, CURRENT_DATE + INTERVAL '6 days 17:00:00', 300, 10, 20),
+(4, 9, CURRENT_DATE + INTERVAL '6 days 17:00:00', 300, 10, 20), (5, 10, CURRENT_DATE + INTERVAL '6 days 17:00:00', 400, 14, 24), (6, 11, CURRENT_DATE + INTERVAL '6 days 17:00:00', 350, 10, 20), (7, 12, CURRENT_DATE + INTERVAL '6 days 17:00:00', 300, 10, 20),
+(9, 1, CURRENT_DATE + INTERVAL '6 days 20:45:00', 300, 10, 20), (10,2, CURRENT_DATE + INTERVAL '6 days 20:45:00', 300, 10, 20), (11,3, CURRENT_DATE + INTERVAL '6 days 20:45:00', 450, 15, 25), (12,4, CURRENT_DATE + INTERVAL '6 days 20:45:00', 320, 10, 20),
+(1, 5, CURRENT_DATE + INTERVAL '6 days 20:45:00', 320, 10, 20), (2, 6, CURRENT_DATE + INTERVAL '6 days 20:45:00', 350, 12, 22), (3, 7, CURRENT_DATE + INTERVAL '6 days 20:45:00', 300, 10, 20), (4, 8, CURRENT_DATE + INTERVAL '6 days 20:45:00', 300, 10, 20),
+(5, 9, CURRENT_DATE + INTERVAL '6 days 20:45:00', 300, 10, 20), (6, 10, CURRENT_DATE + INTERVAL '6 days 20:45:00', 400, 14, 24), (7, 11, CURRENT_DATE + INTERVAL '6 days 20:45:00', 350, 10, 20), (8, 12, CURRENT_DATE + INTERVAL '6 days 20:45:00', 300, 10, 20);

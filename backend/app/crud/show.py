@@ -139,6 +139,33 @@ def get_movies_by_date(db: Session, city: str, target_date: date):
     )
 
 
+def get_movies_by_city(db: Session, city: str):
+    return (
+        db.query(models.Movie)
+        .join(models.Show)
+        .join(models.Screen)
+        .join(models.Theatre)
+        .filter(models.Theatre.city.ilike(city))
+        .distinct()
+        .all()
+    )
+
+
+def get_all_city_shows(db: Session, city: str):
+    return (
+        db.query(models.Show)
+        .options(
+            joinedload(models.Show.movie),
+            joinedload(models.Show.screen).joinedload(models.Screen.theatre),
+        )
+        .join(models.Screen)
+        .join(models.Theatre)
+        .filter(models.Theatre.city.ilike(city))
+        .order_by(models.Show.show_time.asc())
+        .all()
+    )
+
+
 def get_shows_for_movie_by_date_and_city(
     db: Session, movie_id: int, target_date: str, city: str
 ):

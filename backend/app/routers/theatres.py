@@ -10,6 +10,11 @@ from app.crud import show as crud_show
 router = APIRouter(prefix="/theatres", tags=["Theatres"])
 
 
+@router.get("/cities", response_model=List[str])
+def read_all_cities(db: Session = Depends(get_db)):
+    return crud_theatre.get_all_cities(db)
+
+
 @router.post("/", response_model=schemas.TheatreResponse, status_code=201)
 def create_theatre(theatre: schemas.TheatreCreate, db: Session = Depends(get_db)):
     return crud_theatre.create_theatre(db=db, theatre=theatre)

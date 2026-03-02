@@ -50,6 +50,16 @@ def read_city_schedule(city: str, target_date: date, db: Session = Depends(get_d
     return crud_show.get_city_shows_by_date(db, city=city, target_date=target_date)
 
 
+@router.get("/movies-by-city", response_model=List[schemas.MovieResponse])
+def read_movies_by_city(city: str, db: Session = Depends(get_db)):
+    return crud_show.get_movies_by_city(db, city=city)
+
+
+@router.get("/city-schedule-all", response_model=List[schemas.ShowDetailResponse])
+def read_all_city_schedule(city: str, db: Session = Depends(get_db)):
+    return crud_show.get_all_city_shows(db, city=city)
+
+
 @router.get("/movies-by-date", response_model=List[schemas.MovieResponse])
 def read_movies_by_date(city: str, target_date: date, db: Session = Depends(get_db)):
     return crud_show.get_movies_by_date(db, city=city, target_date=target_date)
