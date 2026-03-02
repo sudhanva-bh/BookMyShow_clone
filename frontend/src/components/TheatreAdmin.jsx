@@ -37,7 +37,7 @@ const TheatreAdmin = ({ styles }) => {
   const [screenShows, setScreenShows] = useState([]);
   const [isAddingShow, setIsAddingShow] = useState(false);
   const [moviesList, setMoviesList] = useState([]);
-  const [expandedDates, setExpandedDates] = useState({}); // Track which date accordions are open
+  const [expandedDates, setExpandedDates] = useState({}); 
   
   const [showForm, setShowForm] = useState({ 
     movie_id: '', 
@@ -50,7 +50,7 @@ const TheatreAdmin = ({ styles }) => {
   
   const [screenForm, setScreenForm] = useState({ screen_name: '', rows: '', cols: '' });
   const [confirmConfig, setConfirmConfig] = useState({ show: false, type: '', targetId: null, message: '' });
-  const [errorConfig, setErrorConfig] = useState({ show: false, message: '' }); // Custom Error Popup State
+  const [errorConfig, setErrorConfig] = useState({ show: false, message: '' }); 
 
   useEffect(() => { 
     fetchTheatres(); 
@@ -88,7 +88,7 @@ const TheatreAdmin = ({ styles }) => {
   const handleScreenClick = (screen) => {
     setSelectedScreen(screen);
     setIsAddingShow(false);
-    setExpandedDates({}); // Reset expansions when switching screens
+    setExpandedDates({}); 
     fetchScreenShows(screen.screen_id);
   };
 
@@ -105,7 +105,6 @@ const TheatreAdmin = ({ styles }) => {
       setIsAddingShow(false);
       fetchScreenShows(selectedScreen.screen_id); 
     } catch (err) { 
-      // Replace default alert with custom popup for time clashing
       setErrorConfig({ show: true, message: "Another show already added during that time." });
     }
   };
@@ -128,6 +127,10 @@ const TheatreAdmin = ({ styles }) => {
       if (confirmConfig.type === 'DELETE_SCREEN') {
         await api.delete(`/screens/${confirmConfig.targetId}`);
         fetchScreens(selectedTheatre.theatre_id);
+      } else if (confirmConfig.type === 'DELETE_SHOW') {
+        // --- NEW: Added Delete Show Execution ---
+        await api.delete(`/shows/${confirmConfig.targetId}`);
+        fetchScreenShows(selectedScreen.screen_id);
       } else if (confirmConfig.type === 'SAVE_SCREEN') {
         const payload = {
           screen_name: screenForm.screen_name,
@@ -152,9 +155,8 @@ const TheatreAdmin = ({ styles }) => {
     }));
   };
 
-  // --- Group Shows by Date ---
   const groupedShows = screenShows
-    .sort((a, b) => new Date(a.show_time) - new Date(b.show_time)) // Sort chronologically
+    .sort((a, b) => new Date(a.show_time) - new Date(b.show_time)) 
     .reduce((acc, sh) => {
       const dateHeading = formatDateHeading(sh.show_time);
       if (!acc[dateHeading]) acc[dateHeading] = [];
@@ -257,11 +259,21 @@ const TheatreAdmin = ({ styles }) => {
                                     <div>
                                       <strong style={{ fontSize: '1.05rem' }}>{moviesList.find(m => m.movie_id === sh.movie_id)?.title || 'Loading Title...'}</strong>
                                       <div style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>
-                                        {sh.rows}x{sh.cols} Layout • ₹{sh.seat_price}
+                                        {/* --- FIXED: Uses selectedScreen dimensions --- */}
+                                        {selectedScreen.rows}x{selectedScreen.cols} Layout • ₹{sh.seat_price}
                                       </div>
                                     </div>
-                                    <div style={{ background: '#333', padding: '6px 12px', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 'bold' }}>
-                                      {formatTime(sh.show_time)}
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                      <div style={{ background: '#333', padding: '6px 12px', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                                        {formatTime(sh.show_time)}
+                                      </div>
+                                      {/* --- NEW: Delete Show Button --- */}
+                                      <button 
+                                        onClick={(e) => { e.stopPropagation(); triggerConfirm('DELETE_SHOW', 'Delete this show schedule?', sh.show_id); }}
+                                        style={{ background: '#f44336', color: '#fff', border: 'none', padding: '6px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                      >
+                                        Delete
+                                      </button>
                                     </div>
                                   </div>
                                 ))}
@@ -324,7 +336,7 @@ const TheatreAdmin = ({ styles }) => {
             <div style={{ ...styles.modalContent, width: '320px', textAlign: 'center' }}>
               <h3 style={{ color: '#fff' }}>{confirmConfig.message}</h3>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button onClick={executeAction} style={{ ...styles.submitBtn, flex: 1, background: confirmConfig.type === 'DELETE_SCREEN' ? '#f44336' : '#4caf50' }}>Confirm</button>
+                <button onClick={executeAction} style={{ ...styles.submitBtn, flex: 1, background: confirmConfig.type.includes('DELETE') ? '#f44336' : '#4caf50' }}>Confirm</button>
                 <button onClick={() => setConfirmConfig({ show: false })} style={{ ...styles.tab, flex: 1 }}>Cancel</button>
               </div>
             </div>

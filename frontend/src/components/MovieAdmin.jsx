@@ -8,6 +8,14 @@ const MovieAdmin = ({ styles }) => {
   const [movieSchedules, setMovieSchedules] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Stats and Edit Modal State
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [movieStats, setMovieStats] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+
+  // Custom Notification Modal State
+  const [notification, setNotification] = useState({ show: false, message: '', isError: false });
+
   useEffect(() => { fetchMovies(); }, []);
 
   const fetchMovies = async () => {
@@ -17,18 +25,20 @@ const MovieAdmin = ({ styles }) => {
     } catch (err) { console.error("Error fetching movies", err); }
   };
 
+  const showNotify = (message, isError = false) => {
+    setNotification({ show: true, message, isError });
+  };
+
   const handleMovieClick = async (movie) => {
     setSelectedMovie(movie);
     setLoading(true);
     try {
-      // Fetch data in parallel for efficiency
       const [showsRes, screensRes, theatresRes] = await Promise.all([
         api.get('/shows/'),
         api.get('/screens/'),
         api.get('/theatres/')
       ]);
 
-      // Create Lookups (Dictionaries) for O(1) access instead of repeated .find()
       const screenMap = Object.fromEntries(screensRes.data.map(s => [s.screen_id, s]));
       const theatreMap = Object.fromEntries(theatresRes.data.map(t => [t.theatre_id, t]));
 
@@ -60,13 +70,40 @@ const MovieAdmin = ({ styles }) => {
     }
   };
 
+  const handleOpenDetails = async (e, movie) => {
+    e.stopPropagation(); 
+    setEditForm({ ...movie });
+    try {
+      const res = await api.get(`/admin/stats/revenue/${movie.movie_id}`);
+      setMovieStats(res.data);
+    } catch (err) {
+      setMovieStats({ total_revenue: 0, total_tickets: 0 });
+    }
+    setIsDetailModalOpen(true);
+  };
+
+  const handleUpdateMovie = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/movies/${editForm.movie_id}`, editForm);
+      setIsDetailModalOpen(false);
+      fetchMovies();
+      showNotify("Movie details updated successfully!");
+    } catch (err) {
+      showNotify("Failed to update movie.", true);
+    }
+  };
+
   const handleCreateMovie = async (e) => {
     e.preventDefault();
     try {
       await api.post('/movies/', form);
       setForm({ title: '', language: '', duration_mins: '', release_date: '', certificate: '' });
       fetchMovies();
-    } catch (err) { alert("Error creating movie"); }
+      showNotify("New movie added successfully!");
+    } catch (err) { 
+      showNotify("Error creating movie.", true); 
+    }
   };
 
   return (
@@ -77,11 +114,26 @@ const MovieAdmin = ({ styles }) => {
           {movies.map(m => (
             <div key={m.movie_id} onClick={() => !loading && handleMovieClick(m)}
                  style={{ ...styles.cardStyle, 
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                           opacity: loading ? 0.7 : 1,
                           background: selectedMovie?.movie_id === m.movie_id ? '#333' : '#1a1a1a', 
                           border: selectedMovie?.movie_id === m.movie_id ? '1px solid #f3ce00' : '1px solid #333' }}>
-              <strong style={{ color: '#fff' }}>{m.title}</strong><br/>
-              <small style={{ color: '#aaa' }}>{m.language}</small>
+              <div>
+                <strong style={{ color: '#fff' }}>{m.title}</strong><br/>
+                <small style={{ color: '#aaa' }}>{m.language}</small>
+              </div>
+              
+              <button 
+                onClick={(e) => handleOpenDetails(e, m)}
+                style={{
+                  background: 'none', border: 'none', color: '#f3ce00',
+                  fontSize: '1.2rem', cursor: 'pointer', padding: '5px 10px'
+                }}
+              >
+                ▶
+              </button>
             </div>
           ))}
         </div>
@@ -120,6 +172,64 @@ const MovieAdmin = ({ styles }) => {
           </div>
         )}
       </div>
+
+      {/* Details, Stats & Edit Modal */}
+      {isDetailModalOpen && editForm && (
+        <div style={styles.modalOverlay}>
+          <div style={{...styles.modalContent, width: '450px'}}>
+            <h3 style={{ color: '#fff', marginTop: 0 }}>Movie Insights & Edit</h3>
+            
+            <div style={{ background: '#222', padding: '15px', borderRadius: '8px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
+              <div>
+                <small style={{ color: '#888' }}>Total Revenue</small>
+                <div style={{ color: '#4caf50', fontSize: '1.2rem', fontWeight: 'bold' }}>₹{movieStats?.total_revenue || 0}</div>
+              </div>
+              <div>
+                <small style={{ color: '#888' }}>Tickets Sold</small>
+                <div style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 'bold' }}>{movieStats?.total_tickets || 0}</div>
+              </div>
+            </div>
+
+            <form onSubmit={handleUpdateMovie} style={styles.formStyle}>
+              <label style={{ color: '#888', fontSize: '0.8rem' }}>Title</label>
+              <input style={styles.inputStyle} value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} required />
+              
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ color: '#888', fontSize: '0.8rem' }}>Language</label>
+                  <input style={styles.inputStyle} value={editForm.language} onChange={e => setEditForm({...editForm, language: e.target.value})} required />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ color: '#888', fontSize: '0.8rem' }}>Certificate</label>
+                  <input style={styles.inputStyle} value={editForm.certificate} onChange={e => setEditForm({...editForm, certificate: e.target.value})} required />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                <button type="submit" style={{...styles.submitBtn, flex: 2}}>Save Changes</button>
+                <button type="button" onClick={() => setIsDetailModalOpen(false)} style={{...styles.tab, flex: 1}}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Notification Pop-up */}
+      {notification.show && (
+        <div style={styles.modalOverlay}>
+          <div style={{ ...styles.modalContent, width: '300px', textAlign: 'center', border: notification.isError ? '1px solid #f44336' : '1px solid #4caf50' }}>
+            <div style={{ color: notification.isError ? '#f44336' : '#4caf50', fontSize: '2rem', marginBottom: '10px' }}>
+              {notification.isError ? '⚠️' : '✅'}
+            </div>
+            <p style={{ color: '#fff', margin: '10px 0 20px 0' }}>{notification.message}</p>
+            <button 
+              onClick={() => setNotification({ ...notification, show: false })} 
+              style={{ ...styles.submitBtn, width: '100%', background: notification.isError ? '#f44336' : '#4caf50' }}>
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

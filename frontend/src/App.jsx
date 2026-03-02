@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import UserModule from './components/UserModule';
 import AdminModule from './components/AdminModule';
+// Ensure your logo file is named logo.png in the src folder
+import logo from './logo.png'; 
 
 function App() {
   const [role, setRole] = useState(null);
 
   return (
     <div style={containerStyle}>
-      {/* Global Style Injection for the Body/HTML edges */}
       <style>{`
         body, html {
           margin: 0;
           padding: 0;
-          background-color: #0a0a0a; /* Darkest black for the edges */
+          background-color: #0a0a0a;
           color: white;
         }
         input {
@@ -27,15 +28,14 @@ function App() {
         }
       `}</style>
 
-      {/* Top Heading */}
+      {/* Header with Logo */}
       <header style={headerStyle}>
-        <h1 style={logoStyle}>KerchiefonSeat</h1>
+        <img src={logo} alt="KerchiefonSeat Logo" style={logoImageStyle} />
       </header>
 
       <main style={mainContentStyle}>
         {!role ? (
           <div style={selectionWrapper}>
-            {/* User Option (Left) */}
             <div 
               style={{ ...roleCard, borderRight: '1px solid #333' }} 
               onClick={() => setRole('user')}
@@ -46,7 +46,6 @@ function App() {
               <p style={roleSub}>Find and book your seat</p>
             </div>
 
-            {/* Admin Option (Right) */}
             <div 
               style={roleCard} 
               onClick={() => setRole('admin')}
@@ -86,17 +85,17 @@ const containerStyle = {
 };
 
 const headerStyle = {
-  padding: '60px 20px 20px 20px',
+  padding: '50px 20px 10px 20px',
   textAlign: 'center',
 };
 
-const logoStyle = {
-  fontSize: '3.5rem',
-  fontWeight: '900',
-  letterSpacing: '-2px',
-  margin: 0,
-  color: '#ffffff',
-  textTransform: 'uppercase',
+const logoImageStyle = {
+  height: '200px', // Increased size
+  width: 'auto',
+  display: 'block',
+  margin: '0 auto',
+  backgroundColor: 'transparent', // Ensures no white box around logo
+  mixBlendMode: 'lighten', // Helps blend the logo edges with the dark background
 };
 
 const mainContentStyle = {
