@@ -16,22 +16,15 @@ DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "bookmyshow")
 
-
 def drop_database():
-    """Forcefully disconnects users and drops the database."""
     print(f"Initiating reset for database '{DB_NAME}'...")
     try:
         conn = psycopg2.connect(
-            dbname="postgres",
-            user=DB_USER,
-            password=DB_PASSWORD,
-            host=DB_HOST,
-            port=DB_PORT,
+            dbname="postgres", user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
         )
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
 
-        # 1. Terminate all active connections to the database (except our current one)
         terminate_query = f"""
         SELECT pg_terminate_backend(pg_stat_activity.pid)
         FROM pg_stat_activity
@@ -39,8 +32,6 @@ def drop_database():
           AND pid <> pg_backend_pid();
         """
         cursor.execute(terminate_query)
-
-        # 2. Drop the database
         cursor.execute(f"DROP DATABASE IF EXISTS {DB_NAME};")
         print(f"Database '{DB_NAME}' dropped successfully.")
 
@@ -50,23 +41,18 @@ def drop_database():
         print(f"Error dropping database: {e}")
         exit(1)
 
-
 if __name__ == "__main__":
     if not DB_PASSWORD:
         print("Error: DB_PASSWORD is not set. Please check your backend/.env file.")
         exit(1)
 
     drop_database()
-
     create_database()
 
-    seed_choice = (
-        input("Do you want to seed the database with sample data? (y/n): ")
-        .strip()
-        .lower()
-    )
+    seed_choice = input("Do you want to seed the database with sample data? (y/n): ").strip().lower()
     should_seed = seed_choice in ["y", "yes"]
 
+    # execute_sql_scripts automatically calls the new python seeder logic at the end if should_seed=True
     execute_sql_scripts(seed_data=should_seed)
 
     print("Full reset complete! You have a perfectly clean slate.")
