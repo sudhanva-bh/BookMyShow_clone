@@ -159,7 +159,8 @@ class TheatreUpdate(BaseModel):
 
 class ScreenUpdate(BaseModel):
     screen_name: Optional[str] = None
-    total_capacity: Optional[int] = None
+    rows: Optional[int] = None
+    cols: Optional[int] = None
 
 class MovieUpdate(BaseModel):
     title: Optional[str] = None
