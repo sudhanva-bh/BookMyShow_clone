@@ -42,7 +42,8 @@ class TheatreResponse(TheatreBase):
 
 class ScreenBase(BaseModel):
     screen_name: str
-    total_capacity: int
+    rows: int
+    cols: int
 
 
 class ScreenCreate(ScreenBase):
@@ -82,8 +83,6 @@ class ShowBase(BaseModel):
     screen_id: int
     show_time: datetime
     seat_price: float
-    rows: int
-    cols: int
 
 
 class ShowCreate(ShowBase):
