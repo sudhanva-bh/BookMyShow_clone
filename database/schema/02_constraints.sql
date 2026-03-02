@@ -47,8 +47,6 @@ ALTER TABLE movie
     ADD CONSTRAINT chk_movie_duration CHECK (duration_mins > 0),
     ADD CONSTRAINT chk_movie_release CHECK (release_date <= CURRENT_DATE);
 
-ALTER TABLE screen
-    ADD CONSTRAINT chk_screen_capacity CHECK (total_capacity > 0);
 
 ALTER TABLE show
     ADD CONSTRAINT chk_show_price CHECK (seat_price > 0);
