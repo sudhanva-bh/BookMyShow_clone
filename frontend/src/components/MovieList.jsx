@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { Search, Globe, Clock, Calendar, Ticket, X } from 'lucide-react';
+import { Search, Globe, Clock, Calendar, Ticket, X, MapPin } from 'lucide-react';
 
 const MovieList = ({ onSelectMovie }) => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [languageFilter, setLanguageFilter] = useState('');
   const [certFilter, setCertFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [cityFilter, dateFilter]); // Auto-fetch when discovery filters change
 
   const fetchMovies = async () => {
     try {
-      const res = await api.get('/movies/');
-      setMovies(res.data);
+      if (cityFilter && dateFilter) {
+        // Feature: City-Wide Movie List
+        const res = await api.get('/shows/movies-by-date', {
+          params: { city: cityFilter, date: dateFilter }
+        });
+        setMovies(res.data);
+      } else {
+        const res = await api.get('/movies/');
+        setMovies(res.data);
+      }
     } catch (err) {
       console.error("Error fetching movies", err);
+      setMovies([]); // Graceful fallback
     }
   };
 
@@ -44,6 +55,24 @@ const MovieList = ({ onSelectMovie }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+
+        {/* New discovery inputs for backend endpoints */}
+        <div style={locationWrapper}>
+          <MapPin size={18} color="#666" style={searchIcon} />
+          <input 
+            style={searchInput} 
+            type="text" 
+            placeholder="City (e.g. Mumbai)" 
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+          />
+        </div>
+        <input 
+          style={{ ...selectInput, colorScheme: "dark" }} 
+          type="date" 
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+        />
         
         <select style={selectInput} value={languageFilter} onChange={(e) => setLanguageFilter(e.target.value)}>
           <option value="">All Languages</option>
@@ -55,8 +84,8 @@ const MovieList = ({ onSelectMovie }) => {
           {uniqueCerts.map(cert => <option key={cert} value={cert}>{cert}</option>)}
         </select>
         
-        {(searchTerm || languageFilter || certFilter) && (
-          <button style={clearBtn} onClick={() => { setSearchTerm(''); setLanguageFilter(''); setCertFilter(''); }}>
+        {(searchTerm || languageFilter || certFilter || cityFilter || dateFilter) && (
+          <button style={clearBtn} onClick={() => { setSearchTerm(''); setLanguageFilter(''); setCertFilter(''); setCityFilter(''); setDateFilter(''); }}>
             <X size={16} />
           </button>
         )}
@@ -93,7 +122,8 @@ const MovieList = ({ onSelectMovie }) => {
 // --- Styles ---
 const containerStyle = { display: 'flex', flexDirection: 'column', height: '100%' };
 const filterContainer = { display: 'flex', gap: '10px', marginBottom: '25px', flexWrap: 'wrap', alignItems: 'center' };
-const searchWrapper = { position: 'relative', flex: 2, minWidth: '200px' };
+const searchWrapper = { position: 'relative', flex: 2, minWidth: '180px' };
+const locationWrapper = { position: 'relative', flex: 1, minWidth: '150px' };
 const searchIcon = { position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' };
 const searchInput = { width: '100%', padding: '10px 10px 10px 38px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', boxSizing: 'border-box' };
 const selectInput = { flex: 1, minWidth: '130px', padding: '10px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', cursor: 'pointer' };
