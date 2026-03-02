@@ -52,6 +52,7 @@ def create_show(db: Session, show: schemas.ShowCreate):
 
     return db_show
 
+
 def update_show(db: Session, show_id: int, show_update: schemas.ShowUpdate):
     db_show = get_show(db, show_id)
     if not db_show:
@@ -62,6 +63,16 @@ def update_show(db: Session, show_id: int, show_update: schemas.ShowUpdate):
     db.commit()
     db.refresh(db_show)
     return db_show
+
+
+def get_shows_by_screen(db: Session, screen_id: int):
+    return (
+        db.query(models.Show)
+        .filter(models.Show.screen_id == screen_id)
+        .order_index(models.Show.show_time.asc())
+        .all()
+    )
+
 
 def delete_show(db: Session, show_id: int):
     db_show = get_show(db, show_id)
