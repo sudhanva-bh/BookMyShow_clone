@@ -69,7 +69,7 @@ def get_shows_by_screen(db: Session, screen_id: int):
     return (
         db.query(models.Show)
         .filter(models.Show.screen_id == screen_id)
-        .order_index(models.Show.show_time.asc())
+        .order_by(models.Show.show_time.asc())
         .all()
     )
 
