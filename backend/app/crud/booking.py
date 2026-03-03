@@ -73,6 +73,7 @@ def get_user_bookings(db: Session, user_id: int):
             joinedload(models.Booking.show)
             .joinedload(models.Show.screen)
             .joinedload(models.Screen.theatre),
+            joinedload(models.Booking.seats),
         )
         .filter(models.Booking.user_id == user_id)
         .order_by(models.Booking.booking_time.desc())

@@ -160,6 +160,7 @@ class BookingResponse(BookingBase):
 # NEW: Booking History
 class BookingDetailResponse(BookingResponse):
     show: Optional[ShowDetailResponse] = None
+    seats: List[SeatResponse] = []
 
 
 class PaymentBase(BaseModel):
