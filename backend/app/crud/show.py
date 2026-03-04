@@ -166,6 +166,21 @@ def get_all_city_shows(db: Session, city: str):
     )
 
 
+def get_shows_by_movie(db: Session, movie_id: int):
+    return (
+        db.query(models.Show)
+        .options(
+            joinedload(models.Show.movie),
+            joinedload(models.Show.screen).joinedload(models.Screen.theatre),
+        )
+        .join(models.Screen)
+        .join(models.Theatre)
+        .filter(models.Show.movie_id == movie_id)
+        .order_by(models.Show.show_time.asc())
+        .all()
+    )
+
+
 def get_shows_for_movie_by_date_and_city(
     db: Session, movie_id: int, target_date: str, city: str
 ):

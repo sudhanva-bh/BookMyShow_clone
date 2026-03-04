@@ -37,6 +37,12 @@ def read_shows_by_screen(screen_id: int, db: Session = Depends(get_db)):
     return crud_show.get_shows_by_screen(db, screen_id=screen_id)
 
 
+@router.get("/movie/{movie_id}", response_model=List[schemas.ShowDetailResponse])
+def read_shows_by_movie(movie_id: int, db: Session = Depends(get_db)):
+    """Retrieve all shows, including theatre and screen details, for a specific movie."""
+    return crud_show.get_shows_by_movie(db, movie_id=movie_id)
+
+
 @router.get("/city-schedule", response_model=List[schemas.ShowDetailResponse])
 def read_city_schedule(city: str, target_date: date, db: Session = Depends(get_db)):
     """Retrieve all shows in a specific city for a given date."""

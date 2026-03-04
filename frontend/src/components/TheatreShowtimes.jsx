@@ -3,8 +3,6 @@ import api from "../services/api";
 import { MapPin, MonitorPlay, CalendarDays } from "lucide-react";
 
 const TheatreShowtimes = ({ movie, onSelectShow }) => {
-  const [theatres, setTheatres] = useState([]);
-  const [screens, setScreens] = useState([]);
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState("");
@@ -13,16 +11,11 @@ const TheatreShowtimes = ({ movie, onSelectShow }) => {
     const fetchSchedulingData = async () => {
       setLoading(true);
       try {
-        const [showsRes, screensRes, theatresRes] = await Promise.all([
-          api.get("/shows/"),
-          api.get("/screens/"),
-          api.get("/theatres/"),
-        ]);
-
-        const movieShows = showsRes.data.filter((s) => s.movie_id === movie.movie_id);
+        // Just one focused API call!
+        const res = await api.get(`/shows/movie/${movie.movie_id}`);
+        const movieShows = res.data;
+        
         setShows(movieShows);
-        setScreens(screensRes.data);
-        setTheatres(theatresRes.data);
 
         if (movieShows.length > 0) {
           const dates = [...new Set(movieShows.map((s) => s.show_time.split("T")[0]))].sort();
@@ -43,12 +36,14 @@ const TheatreShowtimes = ({ movie, onSelectShow }) => {
 
   const availableDates = [...new Set(shows.map((s) => s.show_time.split("T")[0]))].sort();
   const showsOnDate = shows.filter((s) => s.show_time.startsWith(selectedDate));
+  
+  // Refactored grouping logic since the data is nested in the new endpoint
   const groupedData = {};
 
   showsOnDate.forEach((show) => {
-    const screen = screens.find((sc) => sc.screen_id === show.screen_id);
+    const screen = show.screen;
     if (!screen) return;
-    const theatre = theatres.find((t) => t.theatre_id === screen.theatre_id);
+    const theatre = screen.theatre;
     if (!theatre) return;
 
     if (!groupedData[theatre.theatre_id]) {
