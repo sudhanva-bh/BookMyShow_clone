@@ -5,8 +5,6 @@ from app import models, schemas
 import string
 from datetime import date
 
-# -------------------- SHOW OPERATIONS --------------------
-
 
 def get_show(db: Session, show_id: int):
     return (
@@ -82,7 +80,6 @@ def update_show(db: Session, show_id: int, show_update: schemas.ShowUpdate):
 
 
 def get_shows_by_screen(db: Session, screen_id: int):
-    # FIX: Added joinedload for movie details
     return (
         db.query(models.Show)
         .options(joinedload(models.Show.movie))

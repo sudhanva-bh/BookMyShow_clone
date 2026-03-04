@@ -3,8 +3,6 @@ from fastapi import HTTPException
 from datetime import datetime, timedelta
 from app import models, schemas
 
-# -------------------- BOOKING OPERATIONS --------------------
-
 
 def create_booking(db: Session, booking: schemas.BookingCreate):
     show = db.query(models.Show).filter(models.Show.show_id == booking.show_id).first()

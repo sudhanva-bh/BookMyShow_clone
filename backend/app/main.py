@@ -15,7 +15,7 @@ from app.routers import (
     show,
     bookings,
     payments,
-    admin,  # FIX: Added new router
+    admin,
 )
 
 app = FastAPI(
@@ -39,7 +39,7 @@ app.include_router(movies.router)
 app.include_router(show.router)
 app.include_router(bookings.router)
 app.include_router(payments.router)
-app.include_router(admin.router)  # FIX: Include new Admin router
+app.include_router(admin.router)
 
 
 def clean_expired_seats():

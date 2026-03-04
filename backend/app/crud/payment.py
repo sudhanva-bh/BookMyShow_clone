@@ -3,8 +3,6 @@ from fastapi import HTTPException
 from datetime import datetime
 from app import models
 
-# -------------------- PAYMENT OPERATIONS --------------------
-
 
 def process_payment(db: Session, payment_id: int, success: bool):
     # Lock the payment row to prevent processing it twice concurrently

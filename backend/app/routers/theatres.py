@@ -9,30 +9,36 @@ from app.crud import show as crud_show
 
 router = APIRouter(prefix="/theatres", tags=["Theatres"])
 
+
 @router.get("/cities", response_model=List[str])
 def read_all_cities(db: Session = Depends(get_db)):
     """Retrieve a list of all cities where theatres are located."""
     return crud_theatre.get_all_cities(db)
+
 
 @router.post("/", response_model=schemas.TheatreResponse, status_code=201)
 def create_theatre(theatre: schemas.TheatreCreate, db: Session = Depends(get_db)):
     """Add a new theatre."""
     return crud_theatre.create_theatre(db=db, theatre=theatre)
 
+
 @router.get("/", response_model=List[schemas.TheatreResponse])
 def read_theatres(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """Retrieve a paginated list of all theatres."""
     return crud_theatre.get_theatres(db, skip=skip, limit=limit)
+
 
 @router.get("/city/{city_name}", response_model=List[schemas.TheatreResponse])
 def read_theatres_by_city(city_name: str, db: Session = Depends(get_db)):
     """Retrieve all theatres located in a specific city."""
     return crud_theatre.get_theatres_by_city(db, city=city_name)
 
+
 @router.get("/{theatre_id}/movies", response_model=List[schemas.MovieResponse])
 def read_theatre_movies(theatre_id: int, db: Session = Depends(get_db)):
     """Retrieve all movies playing at a specific theatre."""
     return crud_theatre.get_movies_by_theatre(db, theatre_id=theatre_id)
+
 
 @router.get("/{theatre_id}/schedule", response_model=List[schemas.ShowDetailResponse])
 def read_theatre_schedule(
@@ -43,6 +49,7 @@ def read_theatre_schedule(
         db, theatre_id=theatre_id, target_date=target_date
     )
 
+
 @router.get("/{theatre_id}", response_model=schemas.TheatreResponse)
 def read_theatre(theatre_id: int, db: Session = Depends(get_db)):
     """Retrieve details of a specific theatre by its ID."""
@@ -50,6 +57,7 @@ def read_theatre(theatre_id: int, db: Session = Depends(get_db)):
     if db_theatre is None:
         raise HTTPException(status_code=404, detail="Theatre not found")
     return db_theatre
+
 
 @router.put("/{theatre_id}", response_model=schemas.TheatreResponse)
 def update_theatre(
@@ -62,6 +70,7 @@ def update_theatre(
     if updated_theatre is None:
         raise HTTPException(status_code=404, detail="Theatre not found")
     return updated_theatre
+
 
 @router.delete("/{theatre_id}", status_code=204)
 def delete_theatre(theatre_id: int, db: Session = Depends(get_db)):

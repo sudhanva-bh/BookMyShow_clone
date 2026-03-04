@@ -45,8 +45,8 @@ class Screen(Base):
     screen_id = Column(Integer, primary_key=True, index=True)
     theatre_id = Column(Integer, ForeignKey("theatre.theatre_id", ondelete="CASCADE"), nullable=False)
     screen_name = Column(String(50), nullable=False)
-    rows = Column(Integer, nullable=False, default=10) # Added
-    cols = Column(Integer, nullable=False, default=20) # Added
+    rows = Column(Integer, nullable=False, default=10)
+    cols = Column(Integer, nullable=False, default=20)
     __table_args__ = (UniqueConstraint("theatre_id", "screen_name", name="uq_screen_theatre_name"),)
 
     theatre = relationship("Theatre", back_populates="screens")
