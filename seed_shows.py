@@ -108,6 +108,40 @@ def seed_shows_and_seats():
         (5, 9, 6, 20, 45, 300), (6, 10, 6, 20, 45, 400), (7, 11, 6, 20, 45, 350), (8, 12, 6, 20, 45, 300),
     ]
 
+    # Dynamically generate 1500 additional shows
+    additional_shows = []
+    current_day = 7
+    shows_added = 0
+    time_slots = [(9, 30), (13, 15), (17, 0), (20, 45)]
+    
+    # Cycle through movies and prices to ensure variety
+    movies = list(range(1, 13))
+    prices = [200, 220, 250, 300, 320, 350, 400, 450]
+    
+    movie_idx = 0
+    price_idx = 0
+
+    while shows_added < 1500:
+        for hour, minute in time_slots:
+            for screen_id in range(1, 13):
+                if shows_added >= 1500:
+                    break
+                
+                movie_id = movies[movie_idx % len(movies)]
+                price = prices[price_idx % len(prices)]
+                
+                additional_shows.append((movie_id, screen_id, current_day, hour, minute, price))
+                
+                shows_added += 1
+                movie_idx += 1
+                price_idx += 1
+                
+            if shows_added >= 1500:
+                break
+        current_day += 1
+
+    all_shows_config.extend(additional_shows)
+
     shows_created = 0
     print(f"\n[Seeder] Generating {len(all_shows_config)} shows and seats explicitly via Python CRUD...")
 
