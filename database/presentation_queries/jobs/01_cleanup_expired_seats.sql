@@ -1,3 +1,4 @@
+-- NOTE: This query does not have a direct 1:1 mapped API endpoint in the current backend.
 BEGIN;
 
 -- 1. Identify and update expired pending payments
