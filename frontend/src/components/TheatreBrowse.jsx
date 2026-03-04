@@ -86,6 +86,13 @@ const TheatreBrowse = ({ onSelectShow }) => {
       </div>
 
       <div style={dateTabContainer}>
+        {/* Added Date Picker Here */}
+        <input 
+          type="date" 
+          value={date} 
+          onChange={(e) => setDate(e.target.value)}
+          style={datePickerStyle}
+        />
         {nextDays.map(d => {
           const dateObj = new Date(d);
           const displayDate = dateObj.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' });
@@ -152,7 +159,8 @@ const TheatreBrowse = ({ onSelectShow }) => {
 const gridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px", overflowY: "auto" };
 const theatreCardStyle = { background: "#111", border: "1px solid #222", borderRadius: "8px", padding: "20px", cursor: "pointer", transition: "border-color 0.2s" };
 const backBtn = { display: "flex", alignItems: "center", gap: "6px", padding: "8px 15px", background: "#1a1a1a", color: "#ccc", border: "1px solid #333", borderRadius: "6px", cursor: "pointer", fontSize: "0.9rem" };
-const dateTabContainer = { display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "5px" };
+const dateTabContainer = { display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "5px", alignItems: "center" };
+const datePickerStyle = { padding: "9px 12px", background: "#1a1a1a", color: "#fff", border: "1px solid #333", borderRadius: "8px", cursor: "pointer", outline: "none", fontFamily: "inherit" };
 const dateTab = { display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "#1a1a1a", color: "#888", border: "1px solid #333", borderRadius: "8px", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s" };
 const activeDateTab = { ...dateTab, background: "#f3ce00", color: "#000", border: "1px solid #f3ce00", fontWeight: "bold" };
 const movieGroupCard = { padding: "20px", background: "#111", border: "1px solid #222", borderRadius: "10px" };

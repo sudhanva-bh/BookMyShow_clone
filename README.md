@@ -76,7 +76,7 @@ cd ..
 ## 4. Initialize Database & Tables
 
 ```bash
-python dbsetup/init.py
+python db_setup/init.py
 ```
 
 And follow on-screen instructions

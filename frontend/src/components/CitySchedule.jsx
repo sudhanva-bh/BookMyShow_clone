@@ -90,6 +90,13 @@ const CitySchedule = ({ onSelectShow }) => {
       </div>
 
       <div style={dateTabContainer}>
+        {/* Added Date Picker Here */}
+        <input 
+          type="date" 
+          value={selectedDate} 
+          onChange={(e) => setSelectedDate(e.target.value)}
+          style={datePickerStyle}
+        />
         {nextDays.map(date => {
           const dateObj = new Date(date);
           const displayDate = dateObj.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' });
@@ -155,7 +162,8 @@ const locationWrapper = { position: 'relative', flex: 1, maxWidth: '400px' };
 const searchIcon = { position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' };
 const selectInputWithIcon = { width: '100%', padding: '12px 12px 12px 38px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', cursor: 'pointer', appearance: 'none', fontSize: "1rem" };
 const placeholderText = { color: "#666", textAlign: "center", padding: "40px 0", fontSize: "1.1rem" };
-const dateTabContainer = { display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "5px" };
+const dateTabContainer = { display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "5px", alignItems: "center" };
+const datePickerStyle = { padding: "9px 12px", background: "#1a1a1a", color: "#fff", border: "1px solid #333", borderRadius: "8px", cursor: "pointer", outline: "none", fontFamily: "inherit" };
 const dateTab = { display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "#1a1a1a", color: "#888", border: "1px solid #333", borderRadius: "8px", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s" };
 const activeDateTab = { ...dateTab, background: "#f3ce00", color: "#000", border: "1px solid #f3ce00", fontWeight: "bold" };
 const cardStyle = { background: "#111", border: "1px solid #222", borderRadius: "10px", padding: "20px" };
