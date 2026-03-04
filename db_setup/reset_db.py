@@ -3,10 +3,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import os
 from dotenv import load_dotenv
 
-# Import the functions from your existing setup script
-from init_db import create_database, execute_sql_scripts
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env_path = os.path.join(BASE_DIR, "backend", ".env")
 load_dotenv(dotenv_path=env_path)
 
@@ -40,19 +37,3 @@ def drop_database():
     except Exception as e:
         print(f"Error dropping database: {e}")
         exit(1)
-
-if __name__ == "__main__":
-    if not DB_PASSWORD:
-        print("Error: DB_PASSWORD is not set. Please check your backend/.env file.")
-        exit(1)
-
-    drop_database()
-    create_database()
-
-    seed_choice = input("Do you want to seed the database with sample data? (y/n): ").strip().lower()
-    should_seed = seed_choice in ["y", "yes"]
-
-    # execute_sql_scripts automatically calls the new python seeder logic at the end if should_seed=True
-    execute_sql_scripts(seed_data=should_seed)
-
-    print("Full reset complete! You have a perfectly clean slate.")

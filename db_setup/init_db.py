@@ -1,11 +1,10 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import os
-import sys
 from dotenv import load_dotenv
-from seed_shows import seed_shows_and_seats # <--- IMPORT OUR NEW SEEDER
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Adjusted BASE_DIR since this file is now one folder deep
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env_path = os.path.join(BASE_DIR, "backend", ".env")
 load_dotenv(dotenv_path=env_path)
 
@@ -44,7 +43,7 @@ def create_database():
         print(f"Error creating database: {e}")
         exit(1)
 
-def execute_sql_scripts(seed_data=False):
+def execute_sql_scripts(seed_base_data=False):
     try:
         conn = psycopg2.connect(
             dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
@@ -52,7 +51,7 @@ def execute_sql_scripts(seed_data=False):
         cursor = conn.cursor()
 
         files_to_run = SQL_FILES.copy()
-        if seed_data:
+        if seed_base_data:
             files_to_run.append("03_sample_data.sql")
 
         for filename in files_to_run:
@@ -68,23 +67,7 @@ def execute_sql_scripts(seed_data=False):
 
         cursor.close()
         conn.close()
-
-        # --- Call Python seeder for dependent records (shows & seats) ---
-        if seed_data:
-            seed_shows_and_seats()
-
-        print("\nDatabase setup complete!")
+        print("\nSQL execution complete!")
 
     except Exception as e:
         print(f"Error executing scripts: {e}")
-
-if __name__ == "__main__":
-    if not DB_PASSWORD:
-        print("Error: DB_PASSWORD is not set. Please check your backend/.env file.")
-        exit(1)
-
-    seed_choice = input("Do you want to seed the database with sample data? (y/n): ").strip().lower()
-    should_seed = seed_choice in ["y", "yes"]
-
-    create_database()
-    execute_sql_scripts(seed_data=should_seed)

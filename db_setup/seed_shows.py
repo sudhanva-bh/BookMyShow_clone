@@ -2,8 +2,8 @@ import os
 import sys
 from datetime import datetime, timedelta, date
 
-# Setup path so we can import backend app modules
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Setup path so we can import backend app modules (Adjusted for nested folder)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, "backend"))
 
 from app.database import SessionLocal
