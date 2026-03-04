@@ -13,7 +13,6 @@ from reset_db import drop_database
 from seed_shows import seed_shows_and_seats
 
 def interactive_menu():
-    print("\n=== BookMyShow Database Setup CLI ===")
     print("1. Initialize Database (Empty schema only)")
     print("2. Initialize Database (With Sample Data & Shows)")
     print("3. Reset Database (Drop, Recreate, Empty)")

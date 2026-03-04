@@ -102,7 +102,7 @@ def health_check(db: Session = Depends(get_db)):
         return {
             "status": "healthy",
             "database": "connected",
-            "message": "API and Database are communicating successfully.",
+            "message": "API and Database are communicating successfully",
         }
     except Exception as e:
         raise HTTPException(

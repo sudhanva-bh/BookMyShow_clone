@@ -13,6 +13,7 @@ from app.schemas import ShowCreate
 
 
 def seed_shows_and_seats():
+    print("[Seeder] Seeding shows")
     db = SessionLocal()
 
     # Base starting date (Midnight today)
@@ -101,7 +102,7 @@ def seed_shows_and_seats():
 
     db.close()
     print(
-        f"[Seeder] Successfully seeded {shows_created} shows with a rotating daily schedule!"
+        f"[Seeder] Successfully seeded {shows_created} shows"
     )
 
 

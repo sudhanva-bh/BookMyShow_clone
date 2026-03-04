@@ -14,7 +14,7 @@ DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "bookmyshow")
 
 def drop_database():
-    print(f"Initiating reset for database '{DB_NAME}'...")
+    print(f"Initiating reset for database '{DB_NAME}'")
     try:
         conn = psycopg2.connect(
             dbname="postgres", user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
@@ -30,7 +30,7 @@ def drop_database():
         """
         cursor.execute(terminate_query)
         cursor.execute(f"DROP DATABASE IF EXISTS {DB_NAME};")
-        print(f"Database '{DB_NAME}' dropped successfully.")
+        print(f"Database '{DB_NAME}' dropped successfully")
 
         cursor.close()
         conn.close()

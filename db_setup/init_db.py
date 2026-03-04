@@ -21,19 +21,26 @@ SQL_FILES = [
     "02_constraints.sql",
 ]
 
+
 def create_database():
     try:
         conn = psycopg2.connect(
-            dbname="postgres", user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
+            dbname="postgres",
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=DB_PORT,
         )
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
 
-        cursor.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{DB_NAME}'")
+        cursor.execute(
+            f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{DB_NAME}'"
+        )
         if not cursor.fetchone():
-            print(f"Creating database '{DB_NAME}'...")
+            print(f"Creating database '{DB_NAME}'")
             cursor.execute(f"CREATE DATABASE {DB_NAME};")
-            print("Database created successfully.")
+            print("Database created successfully")
         else:
             print(f"Database '{DB_NAME}' already exists. Skipping creation.")
 
@@ -43,10 +50,15 @@ def create_database():
         print(f"Error creating database: {e}")
         exit(1)
 
+
 def execute_sql_scripts(seed_base_data=False):
     try:
         conn = psycopg2.connect(
-            dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=DB_PORT,
         )
         cursor = conn.cursor()
 
@@ -57,17 +69,17 @@ def execute_sql_scripts(seed_base_data=False):
         for filename in files_to_run:
             filepath = os.path.join(SCHEMA_DIR, filename)
             if os.path.exists(filepath):
-                print(f"Executing {filename}...")
+                print(f"Executing {filename}")
                 with open(filepath, "r") as file:
                     cursor.execute(file.read())
                 conn.commit()
-                print(f"{filename} executed successfully.")
+                print(f"{filename} executed successfully")
             else:
                 print(f"Warning: File not found at {filepath}")
 
         cursor.close()
         conn.close()
-        print("\nSQL execution complete!")
+        print("\nSQL execution complete")
 
     except Exception as e:
         print(f"Error executing scripts: {e}")
