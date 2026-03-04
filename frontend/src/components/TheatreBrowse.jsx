@@ -10,7 +10,6 @@ const TheatreBrowse = ({ onSelectShow }) => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [loading, setLoading] = useState(false);
 
-  // Generate next 7 days for the date chip selector
   const nextDays = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
@@ -34,7 +33,6 @@ const TheatreBrowse = ({ onSelectShow }) => {
     }
   }, [selectedTheatre, date]);
 
-  // View: Selection Grid
   if (!selectedTheatre) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -53,29 +51,24 @@ const TheatreBrowse = ({ onSelectShow }) => {
     );
   }
 
-  // Check if a show is still valid (Discard 1 hour after show ends)
   const isShowValid = (show) => {
-    const durationMins = show.movie?.duration_mins || 150; // default to 2.5 hours if missing
-    const bufferMins = 60; // 1 hour buffer after the movie ends
+    const durationMins = show.movie?.duration_mins || 150;
+    const bufferMins = 60;
     const endTime = new Date(show.show_time).getTime() + (durationMins + bufferMins) * 60000;
     return endTime > Date.now();
   };
 
-  // Group shows by Movie
   const groupedSchedule = {};
   schedule.forEach(show => {
     if (!isShowValid(show)) return;
-
     const movie = show.movie || { movie_id: show.movie_id, title: `Movie ${show.movie_id}` };
     const mId = movie.movie_id;
-
     if (!groupedSchedule[mId]) {
       groupedSchedule[mId] = { movie, shows: [] };
     }
     groupedSchedule[mId].shows.push(show);
   });
 
-  // Sort shows by time
   Object.values(groupedSchedule).forEach(m => {
     m.shows.sort((a, b) => new Date(a.show_time) - new Date(b.show_time));
   });
@@ -92,7 +85,6 @@ const TheatreBrowse = ({ onSelectShow }) => {
         </div>
       </div>
 
-      {/* Date Selector Chips */}
       <div style={dateTabContainer}>
         {nextDays.map(d => {
           const dateObj = new Date(d);
@@ -141,6 +133,7 @@ const TheatreBrowse = ({ onSelectShow }) => {
                         style={timeBtn}
                       >
                         <span style={timeText}>{timeStr}</span>
+                        <span style={priceText}>₹{show.seat_price}</span>
                         <span style={screenText}>{show.screen?.screen_name || `Screen ${show.screen_id}`}</span>
                       </button>
                     );
@@ -159,18 +152,16 @@ const TheatreBrowse = ({ onSelectShow }) => {
 const gridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px", overflowY: "auto" };
 const theatreCardStyle = { background: "#111", border: "1px solid #222", borderRadius: "8px", padding: "20px", cursor: "pointer", transition: "border-color 0.2s" };
 const backBtn = { display: "flex", alignItems: "center", gap: "6px", padding: "8px 15px", background: "#1a1a1a", color: "#ccc", border: "1px solid #333", borderRadius: "6px", cursor: "pointer", fontSize: "0.9rem" };
-
 const dateTabContainer = { display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "5px" };
 const dateTab = { display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "#1a1a1a", color: "#888", border: "1px solid #333", borderRadius: "8px", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s" };
 const activeDateTab = { ...dateTab, background: "#f3ce00", color: "#000", border: "1px solid #f3ce00", fontWeight: "bold" };
-
 const movieGroupCard = { padding: "20px", background: "#111", border: "1px solid #222", borderRadius: "10px" };
 const movieTitle = { margin: "0 0 15px 0", color: "#fff", display: "flex", alignItems: "center", gap: "8px", fontSize: "1.2rem", fontWeight: "500" };
 const timeGrid = { display: "flex", flexWrap: "wrap", gap: "10px" };
-const timeBtn = { display: "flex", flexDirection: "column", alignItems: "center", padding: "10px 18px", background: "transparent", border: "1px solid #4caf50", borderRadius: "6px", cursor: "pointer", transition: "all 0.2s" };
+const timeBtn = { display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 16px", background: "transparent", border: "1px solid #4caf50", borderRadius: "6px", cursor: "pointer", transition: "all 0.2s" };
 const timeText = { color: "#4caf50", fontSize: "1rem", fontWeight: "bold" };
-const screenText = { color: "#888", fontSize: "0.75rem", marginTop: "4px" };
-
+const priceText = { color: "#888", fontSize: "0.8rem", marginTop: "4px" };
+const screenText = { color: "#666", fontSize: "0.7rem", marginTop: "4px" };
 const moviePill = { display: "flex", alignItems: "center", gap: "6px", background: "#222", color: "#ccc", fontSize: "0.8rem", padding: "6px 10px", borderRadius: "12px", border: "1px solid #333" };
 
 export default TheatreBrowse;

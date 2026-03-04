@@ -9,21 +9,18 @@ const CitySchedule = ({ onSelectShow }) => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
 
-  // Generate next 7 days for the date chip selector
   const nextDays = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
     return d.toISOString().split("T")[0];
   });
 
-  // Fetch available cities on component mount
   useEffect(() => {
     api.get('/theatres/cities')
       .then(res => setAvailableCities(res.data))
       .catch(console.error);
   }, []);
 
-  // Fetch schedule automatically when a city is selected
   useEffect(() => {
     if (city) {
       setLoading(true);
@@ -35,19 +32,17 @@ const CitySchedule = ({ onSelectShow }) => {
         })
         .finally(() => setLoading(false));
     } else {
-      setSchedule([]); // Clear schedule if no city is selected
+      setSchedule([]);
     }
   }, [city]);
 
-  // Check if a show is still valid (Discard 1 hour after show ends)
   const isShowValid = (show) => {
-    const durationMins = show.movie?.duration_mins || 150; // default to 2.5 hours if missing
-    const bufferMins = 60; // 1 hour buffer after the movie ends
+    const durationMins = show.movie?.duration_mins || 150;
+    const bufferMins = 60;
     const endTime = new Date(show.show_time).getTime() + (durationMins + bufferMins) * 60000;
     return endTime > Date.now();
   };
 
-  // Group shows by Theatre -> Movie for cleaner UI
   const groupedSchedule = {};
   schedule.forEach(show => {
     if (!show.show_time.startsWith(selectedDate)) return;
@@ -70,7 +65,6 @@ const CitySchedule = ({ onSelectShow }) => {
     groupedSchedule[tId].movies[mId].shows.push(show);
   });
 
-  // Sort shows chronologically within their screens
   Object.values(groupedSchedule).forEach(t => {
     Object.values(t.movies).forEach(m => {
       m.shows.sort((a, b) => new Date(a.show_time) - new Date(b.show_time));
@@ -95,7 +89,6 @@ const CitySchedule = ({ onSelectShow }) => {
         </div>
       </div>
 
-      {/* Date Selector Chips */}
       <div style={dateTabContainer}>
         {nextDays.map(date => {
           const dateObj = new Date(date);
@@ -140,6 +133,7 @@ const CitySchedule = ({ onSelectShow }) => {
                             style={timeBtn}
                           >
                             <span style={timeText}>{timeStr}</span>
+                            <span style={priceText}>₹{show.seat_price}</span>
                             <span style={screenText}><MonitorPlay size={10} style={{marginRight: '2px'}}/>{show.screen?.screen_name || 'Screen'}</span>
                           </button>
                         );
@@ -161,20 +155,18 @@ const locationWrapper = { position: 'relative', flex: 1, maxWidth: '400px' };
 const searchIcon = { position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' };
 const selectInputWithIcon = { width: '100%', padding: '12px 12px 12px 38px', background: '#1a1a1a', border: '1px solid #333', color: '#fff', borderRadius: '6px', cursor: 'pointer', appearance: 'none', fontSize: "1rem" };
 const placeholderText = { color: "#666", textAlign: "center", padding: "40px 0", fontSize: "1.1rem" };
-
 const dateTabContainer = { display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "5px" };
 const dateTab = { display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "#1a1a1a", color: "#888", border: "1px solid #333", borderRadius: "8px", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s" };
 const activeDateTab = { ...dateTab, background: "#f3ce00", color: "#000", border: "1px solid #f3ce00", fontWeight: "bold" };
-
 const cardStyle = { background: "#111", border: "1px solid #222", borderRadius: "10px", padding: "20px" };
 const theatreTitle = { margin: 0, color: "#fff", display: "flex", alignItems: "center", gap: "8px", fontSize: "1.2rem", fontWeight: "500" };
 const theatreSubtitle = { margin: "5px 0 0 26px", color: "#888", fontSize: "0.9rem" };
-
 const movieGroup = { padding: "12px", background: "#1a1a1a", borderRadius: "8px", border: "1px solid #222" };
 const movieTitle = { margin: "0 0 12px 0", color: "#ccc", display: "flex", alignItems: "center", gap: "8px", fontSize: "1rem" };
 const timeGrid = { display: "flex", flexWrap: "wrap", gap: "10px" };
 const timeBtn = { display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 16px", background: "transparent", border: "1px solid #4caf50", borderRadius: "6px", cursor: "pointer", transition: "all 0.2s" };
 const timeText = { color: "#4caf50", fontSize: "1rem", fontWeight: "bold" };
-const screenText = { color: "#888", fontSize: "0.75rem", marginTop: "4px", display: "flex", alignItems: "center" };
+const priceText = { color: "#888", fontSize: "0.8rem", marginTop: "4px" };
+const screenText = { color: "#666", fontSize: "0.7rem", marginTop: "4px", display: "flex", alignItems: "center" };
 
 export default CitySchedule;

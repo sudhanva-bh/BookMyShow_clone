@@ -4,18 +4,17 @@ import MovieList from "./MovieList";
 import TheatreShowtimes from "./TheatreShowtimes";
 import TheatreBrowse from "./TheatreBrowse";
 import CitySchedule from "./CitySchedule";
-import { User, LogOut, ArrowLeft, Mail, Phone, UserPlus } from "lucide-react";
+import UserProfile from "./UserProfile";
 import SeatSelection from "./SeatSelection";
 import PaymentSimulation from "./PaymentSimulation";
-import UserBookings from "./UserBookings";
+import { User, LogOut, ArrowLeft, Mail, Phone, UserPlus } from "lucide-react";
 
 const UserModule = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [bookingSuccess, setBookingSuccess] = useState(null);
-  const [activeTab, setActiveTab] = useState("browse"); // "browse", "theatres", "city-schedule", "bookings"
-  
+  const [activeTab, setActiveTab] = useState("browse"); 
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedShow, setSelectedShow] = useState(null);
 
@@ -37,6 +36,7 @@ const UserModule = () => {
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     localStorage.setItem("activeUser", JSON.stringify(user));
+    fetchUsers(); // Refresh list to ensure we have updated profiles
   };
 
   const handleLogout = () => {
@@ -58,27 +58,20 @@ const UserModule = () => {
     }
   };
 
-  // --- VIEW 1: Logged In Flow ---
   if (selectedUser) {
     return (
       <div style={moduleWrapperLarge}>
         <div style={headerStyle}>
-          {/* USER INDICATION */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div style={avatarCircle}>
               <User size={18} color="#aaa" />
             </div>
             <div>
-              <strong style={{ color: "#eee", fontSize: "0.95rem", display: "block" }}>
-                {selectedUser.name}
-              </strong>
-              <small style={{ color: "#666", fontSize: "0.8rem", display: "block" }}>
-                {selectedUser.email}
-              </small>
+              <strong style={{ color: "#eee", fontSize: "0.95rem", display: "block" }}>{selectedUser.name}</strong>
+              <small style={{ color: "#666", fontSize: "0.8rem", display: "block" }}>{selectedUser.email}</small>
             </div>
           </div>
 
-          {/* EXTENDED NAVIGATION MENU */}
           <div style={navMenuContainer}>
             <button
               onClick={() => { setActiveTab("browse"); setSelectedMovie(null); setSelectedShow(null); }}
@@ -99,10 +92,10 @@ const UserModule = () => {
               City Schedule
             </button>
             <button
-              onClick={() => { setActiveTab("bookings"); setSelectedShow(null); }}
-              style={activeTab === "bookings" ? activeNavBtn : navBtn}
+              onClick={() => { setActiveTab("profile"); setSelectedShow(null); }}
+              style={activeTab === "profile" ? activeNavBtn : navBtn}
             >
-              My Tickets
+              Profile
             </button>
           </div>
 
@@ -112,7 +105,6 @@ const UserModule = () => {
         </div>
 
         <div style={contentStyle}>
-          {/* Unified Seat Selection State overrides tabs when a show is selected */}
           {selectedShow && !bookingSuccess ? (
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "20px" }}>
@@ -127,7 +119,6 @@ const UserModule = () => {
                   </p>
                 </div>
               </div>
-
               <SeatSelection
                 user={selectedUser}
                 showContext={selectedShow}
@@ -143,7 +134,7 @@ const UserModule = () => {
                   setSelectedMovie(null);
                   setSelectedShow(null);
                   setBookingSuccess(null);
-                  setActiveTab("bookings");
+                  setActiveTab("profile");
                 }}
                 onCancel={() => setBookingSuccess(null)}
               />
@@ -155,17 +146,10 @@ const UserModule = () => {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "20px" }}>
-                    <button onClick={() => setSelectedMovie(null)} style={backBtn}>
-                      <ArrowLeft size={16} /> Back
-                    </button>
-                    <h2 style={{ color: "#fff", margin: 0, fontWeight: 500 }}>
-                      {selectedMovie.title}
-                    </h2>
+                    <button onClick={() => setSelectedMovie(null)} style={backBtn}><ArrowLeft size={16} /> Back</button>
+                    <h2 style={{ color: "#fff", margin: 0, fontWeight: 500 }}>{selectedMovie.title}</h2>
                   </div>
-                  <TheatreShowtimes
-                    movie={selectedMovie}
-                    onSelectShow={(show, theatre, screen) => setSelectedShow({ show, theatre, screen })}
-                  />
+                  <TheatreShowtimes movie={selectedMovie} onSelectShow={(show, theatre, screen) => setSelectedShow({ show, theatre, screen })} />
                 </div>
               )}
             </>
@@ -174,14 +158,13 @@ const UserModule = () => {
           ) : activeTab === "city-schedule" ? (
             <CitySchedule onSelectShow={(show, theatre, screen) => setSelectedShow({ show, theatre, screen })} />
           ) : (
-            <UserBookings user={selectedUser} />
+            <UserProfile user={selectedUser} onUserUpdate={handleSelectUser} />
           )}
         </div>
       </div>
     );
   }
 
-  // --- VIEW 2: Not Logged In ---
   return (
     <div style={moduleWrapper}>
       <div style={columnStyle}>
@@ -190,9 +173,7 @@ const UserModule = () => {
           {users.map((u) => (
             <div key={u.user_id} onClick={() => handleSelectUser(u)} style={cardStyle}>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={avatarCircleSmall}>
-                  <User size={14} color="#aaa" />
-                </div>
+                <div style={avatarCircleSmall}><User size={14} color="#aaa" /></div>
                 <div>
                   <strong style={{ color: "#eee", fontSize: "0.95rem", display: "block" }}>{u.name}</strong>
                   <small style={{ color: "#666", fontSize: "0.8rem" }}>{u.email}</small>
@@ -209,71 +190,27 @@ const UserModule = () => {
         <form onSubmit={handleCreate} style={formStyle}>
           <div style={inputWrapper}>
             <User size={16} color="#666" style={inputIcon} />
-            <input
-              style={inputStyle}
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+            <input style={inputStyle} placeholder="Full Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
           </div>
           <div style={inputWrapper}>
             <Mail size={16} color="#666" style={inputIcon} />
-            <input
-              style={inputStyle}
-              placeholder="Email Address"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
+            <input style={inputStyle} placeholder="Email Address" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
           </div>
           <div style={inputWrapper}>
             <Phone size={16} color="#666" style={inputIcon} />
-            <input
-              style={inputStyle}
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              required
-            />
+            <input style={inputStyle} placeholder="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required />
           </div>
-          <button type="submit" style={submitBtn}>
-            <UserPlus size={16} /> Register
-          </button>
+          <button type="submit" style={submitBtn}><UserPlus size={16} /> Register</button>
         </form>
       </div>
     </div>
   );
 };
 
-// --- Module Styles ---
-const navMenuContainer = {
-  display: "flex",
-  gap: "10px",
-  background: "#111",
-  padding: "4px",
-  borderRadius: "8px",
-  border: "1px solid #333",
-  flexWrap: "wrap",
-};
-const navBtn = {
-  padding: "8px 16px",
-  background: "transparent",
-  color: "#888",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "0.9rem",
-  fontWeight: "500",
-  transition: "all 0.2s",
-};
-const activeNavBtn = {
-  ...navBtn,
-  background: "#222",
-  color: "#fff",
-  boxShadow: "0 2px 5px rgba(0,0,0,0.5)",
-};
+// --- Styles ---
+const navMenuContainer = { display: "flex", gap: "10px", background: "#111", padding: "4px", borderRadius: "8px", border: "1px solid #333", flexWrap: "wrap" };
+const navBtn = { padding: "8px 16px", background: "transparent", color: "#888", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.9rem", fontWeight: "500", transition: "all 0.2s" };
+const activeNavBtn = { ...navBtn, background: "#222", color: "#fff", boxShadow: "0 2px 5px rgba(0,0,0,0.5)" };
 const moduleWrapper = { display: "flex", minHeight: "550px", background: "#111", borderRadius: "12px", border: "1px solid #222", overflow: "hidden" };
 const moduleWrapperLarge = { display: "flex", flexDirection: "column", height: "85vh", minHeight: "650px", maxHeight: "900px", background: "#111", borderRadius: "12px", border: "1px solid #222", overflow: "hidden" };
 const headerStyle = { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 25px", background: "#0a0a0a", borderBottom: "1px solid #222" };
