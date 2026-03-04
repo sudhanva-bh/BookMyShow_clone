@@ -19,7 +19,7 @@ const TheatreBrowse = ({ onSelectShow }) => {
       setLoading(true);
       Promise.all([
         api.get(`/theatres/${selectedTheatre.theatre_id}/movies`),
-        api.get(`/theatres/${selectedTheatre.theatre_id}/schedule`, { params: { date } })
+        api.get(`/theatres/${selectedTheatre.theatre_id}/schedule`, { params: { target_date: date } })
       ]).then(([moviesRes, schedRes]) => {
         setMovies(moviesRes.data);
         setSchedule(schedRes.data);
