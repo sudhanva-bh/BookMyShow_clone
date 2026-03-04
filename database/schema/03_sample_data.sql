@@ -43,14 +43,38 @@ INSERT INTO movie (title, language, duration_mins, release_date, certificate) VA
 
 -- 4. SEED DATA: SCREENS (12 Screens Total)
 INSERT INTO screen (theatre_id, screen_name, rows, cols) VALUES
-(1, 'Screen 1', 10, 20), (1, 'Screen 2', 10, 20), -- AMB Cinemas (Hyd)
-(2, 'IMAX', 15, 25),                              -- Prasads (Hyd)
-(3, 'Screen 1', 10, 20), (3, 'Screen 2', 10, 20), -- PVR Juhu (Mumbai)
-(4, 'Screen 1', 12, 22),                          -- INOX Nariman (Mumbai)
-(5, 'Screen 1', 10, 20), (5, 'Screen 2', 10, 20), -- PVR Forum (Bangalore)
-(6, 'Screen 1', 10, 20),                          -- Cinepolis Orion (Bangalore)
-(7, 'Screen 1', 14, 24), (7, 'Screen 2', 10, 20), -- PVR Select Citywalk (Delhi)
-(8, 'Screen 1', 10, 20);                          -- INOX Nehru Place (Delhi)
+-- 1. AMB Cinemas (Hyderabad)
+(1, 'Screen 1', 10, 20), 
+(1, 'Screen 2', 10, 20), 
+(1, 'VIP Lounge', 8, 15), 
+(1, 'Screen 4', 12, 22), 
+-- 2. Prasads Multiplex (Hyderabad)
+(2, 'IMAX', 15, 25), 
+(2, 'PCX (Large Format)', 20, 30), 
+(2, 'Screen 3', 10, 20),
+-- 3. PVR Juhu (Mumbai)
+(3, 'Screen 1', 10, 20), 
+(3, 'Screen 2', 10, 20), 
+(3, 'PXL', 15, 25), 
+(3, '4DX', 8, 12),
+-- 4. INOX Nariman Point (Mumbai)
+(4, 'Screen 1', 12, 22), 
+(4, 'INSIGNIA', 6, 10),
+-- 5. PVR Forum (Bangalore)
+(5, 'Screen 1', 10, 20), 
+(5, 'Screen 2', 10, 20), 
+(5, 'Gold Class', 5, 10),
+-- 6. Cinepolis Orion (Bangalore)
+(6, 'Screen 1', 10, 20), 
+(6, 'MACRO XE', 14, 24), 
+(6, 'VIP', 6, 12),
+-- 7. PVR Select Citywalk (Delhi)
+(7, 'Screen 1', 14, 24), 
+(7, 'Screen 2', 10, 20), 
+(7, 'Director''s Cut', 5, 8),
+-- 8. INOX Nehru Place (Delhi)
+(8, 'Screen 1', 10, 20), 
+(8, 'Screen 2', 12, 22);
 
 
 -- -- 5. SEED DATA: SHOWS (288 Shows spanning 6 Days)
