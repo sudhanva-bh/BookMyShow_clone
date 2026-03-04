@@ -24,7 +24,6 @@ const AdminModule = () => {
 
 const styles = {
   adminContainer: { width: '100%', maxWidth: '1000px', margin: '0 auto', boxSizing: 'border-box' },
-  // Fixed awkward scrolling for admin side by matching user side module limits
   moduleWrapper: { display: 'flex', minHeight: '600px', height: '75vh', maxHeight: '850px', background: '#111', borderRadius: '12px', overflow: 'hidden', border: '1px solid #333' },
   columnStyle: { flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' },
   scrollContainer: { flex: 1, overflowY: 'auto', paddingRight: '10px' },

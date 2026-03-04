@@ -36,7 +36,7 @@ const UserModule = () => {
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     localStorage.setItem("activeUser", JSON.stringify(user));
-    fetchUsers(); // Refresh list to ensure we have updated profiles
+    fetchUsers();
   };
 
   const handleLogout = () => {

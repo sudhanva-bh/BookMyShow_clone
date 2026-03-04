@@ -7,7 +7,6 @@ const UserProfile = ({ user, onUserUpdate }) => {
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   
-  // Edit Profile State
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ name: user.name, email: user.email, phone: user.phone });
   const [saving, setSaving] = useState(false);
@@ -219,7 +218,6 @@ const footerLabel = { margin: 0, color: '#666', fontSize: '0.75rem', textTransfo
 const footerValue = { margin: '4px 0 0 0', color: '#fff', fontSize: '1rem', fontWeight: 'bold' };
 const cancelledWatermark = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)', fontSize: '3rem', color: 'rgba(244, 67, 54, 0.1)', fontWeight: '900', pointerEvents: 'none' };
 
-// Modal Styles
 const modalOverlay = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px', backdropFilter: 'blur(5px)' };
 const modalContent = { width: '100%', maxWidth: '550px', display: 'flex', flexDirection: 'column', gap: '15px' };
 const modalHeader = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 10px' };

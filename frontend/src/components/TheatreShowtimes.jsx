@@ -11,7 +11,6 @@ const TheatreShowtimes = ({ movie, onSelectShow }) => {
     const fetchSchedulingData = async () => {
       setLoading(true);
       try {
-        // Just one focused API call!
         const res = await api.get(`/shows/movie/${movie.movie_id}`);
         const movieShows = res.data;
         
@@ -37,7 +36,6 @@ const TheatreShowtimes = ({ movie, onSelectShow }) => {
   const availableDates = [...new Set(shows.map((s) => s.show_time.split("T")[0]))].sort();
   const showsOnDate = shows.filter((s) => s.show_time.startsWith(selectedDate));
   
-  // Refactored grouping logic since the data is nested in the new endpoint
   const groupedData = {};
 
   showsOnDate.forEach((show) => {

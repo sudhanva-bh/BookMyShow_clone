@@ -11,14 +11,12 @@ const MovieList = ({ onSelectMovie }) => {
   const [certFilter, setCertFilter] = useState('');
   const [cityFilter, setCityFilter] = useState('');
 
-  // Fetch available cities on component mount
   useEffect(() => {
     api.get('/theatres/cities')
       .then(res => setAvailableCities(res.data))
       .catch(console.error);
   }, []);
 
-  // Fetch movies when city filter changes
   useEffect(() => {
     fetchMovies();
   }, [cityFilter]);

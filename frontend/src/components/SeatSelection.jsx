@@ -10,7 +10,6 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
 
   useEffect(() => {
     fetchSeats();
-    // Optional: Set up polling to refresh seat status every 5 seconds
     const interval = setInterval(fetchSeats, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -19,7 +18,6 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
     try {
       const res = await api.get(`/shows/${show.show_id}/seats`);
 
-      // FIX: Sort the seats by their ID so they never change positions in the grid!
       const sortedSeats = res.data.sort((a, b) => a.seat_id - b.seat_id);
 
       setSeats(sortedSeats);
@@ -31,13 +29,11 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
   };
 
   const toggleSeat = (seat) => {
-    if (seat.status !== "UNBOOKED") return; // Cannot select booked/processing seats
+    if (seat.status !== "UNBOOKED") return; 
 
     if (selectedSeats.find((s) => s.seat_id === seat.seat_id)) {
-      // If the clicked seat is already selected, deselect it (empty the array)
       setSelectedSeats([]);
     } else {
-      // If a new seat is clicked, make it the ONLY selected seat
       setSelectedSeats([seat]);
     }
   };
@@ -45,8 +41,6 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
     if (selectedSeats.length === 0) return;
 
     try {
-      // Send the booking request to the backend
-      // Adjust the payload structure based on your specific backend Pydantic schema
       const payload = {
         user_id: user.user_id,
         show_id: show.show_id,
@@ -57,8 +51,8 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
       onBookingComplete(res.data);
     } catch (err) {
       alert("Booking failed: " + (err.response?.data?.detail || err.message));
-      fetchSeats(); // Refresh seats in case someone else booked them
-      setSelectedSeats([]); // Clear local selection
+      fetchSeats(); 
+      setSelectedSeats([]); 
     }
   };
 
@@ -67,7 +61,6 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
       <p style={{ color: "#888", padding: "20px" }}>Loading seat map...</p>
     );
 
-  // Calculate grid layout variables
   const totalPrice = selectedSeats.length * parseFloat(show.seat_price);
 
   return (
@@ -83,12 +76,10 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
         <div
           style={{
             display: "grid",
-            // Use screen.cols, fallback to show.cols, or default to a 10-column grid
             gridTemplateColumns: `repeat(${screen?.cols || show?.cols || 10}, minmax(25px, 35px))`,
             gap: "8px",
             justifyContent: "center",
             marginBottom: "40px",
-            // Added some padding so it doesn't touch the edges on smaller screens
             padding: "0 20px",
           }}
         >
@@ -96,7 +87,7 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
             const isSelected = selectedSeats.some(
               (s) => s.seat_id === seat.seat_id,
             );
-            let seatColor = "#1a1a1a"; // UNBOOKED (Default)
+            let seatColor = "#1a1a1a"; 
             let borderColor = "#333";
             let cursor = "pointer";
 
@@ -105,11 +96,11 @@ const SeatSelection = ({ user, showContext, onBack, onBookingComplete }) => {
               borderColor = "#222";
               cursor = "not-allowed";
             } else if (seat.status === "PROCESSING") {
-              seatColor = "#554800"; // Dark Yellow
+              seatColor = "#554800"; 
               borderColor = "#f3ce00";
               cursor = "not-allowed";
             } else if (isSelected) {
-              seatColor = "#4caf50"; // Green
+              seatColor = "#4caf50"; 
               borderColor = "#4caf50";
             }
 

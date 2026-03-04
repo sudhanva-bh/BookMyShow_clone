@@ -15,14 +15,12 @@ We use a Python virtual environment to isolate and manage backend dependencies.
 
 ```bash
 cd backend
-
 ```
 
 ## 2. Create a Virtual Environment
 
 ```bash
 python -m venv venv
-
 ```
 
 ## 3. Activate the Virtual Environment
@@ -31,14 +29,12 @@ python -m venv venv
 
 ```bash
 venv\Scripts\activate
-
 ```
 
 **macOS/Linux:**
 
 ```bash
 source venv/bin/activate
-
 ```
 
 Your terminal prompt should now display `(venv)` at the beginning.
@@ -47,7 +43,6 @@ Your terminal prompt should now display `(venv)` at the beginning.
 
 ```bash
 pip install -r requirements.txt
-
 ```
 
 ---
@@ -60,7 +55,6 @@ Inside the `backend/` directory, create:
 
 ```
 .env
-
 ```
 
 ## 2. Add PostgreSQL Credentials
@@ -71,22 +65,21 @@ DB_PASSWORD=your_actual_password_here
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=bookmyshow
-
 ```
 
 ## 3. Navigate to Root Directory
 
 ```bash
 cd ..
-
 ```
 
 ## 4. Initialize Database & Tables
 
 ```bash
-python init_db.py
-
+python dbsetup/init.py
 ```
+
+And follow on-screen instructions
 
 ---
 
@@ -95,34 +88,30 @@ python init_db.py
 ```bash
 cd backend
 uvicorn app.main:app --reload
-
 ```
 
 Backend runs at:
 
 ```
-[http://127.0.0.1:8000](http://127.0.0.1:8000)
-
+http://127.0.0.1:8000
 ```
 
 Health check:
 
 ```
-[http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
-
+http://127.0.0.1:8000/health
 ```
 
 ---
 
 # Step 4: Start the Frontend (React + Vite)
 
-Ensure you have [Node.js](https://nodejs.org/) installed.
+Ensure you have Node.js installed.
 
 ## 1. Navigate to the Frontend Directory
 
 ```bash
 cd frontend
-
 ```
 
 ## 2. Install Dependencies
@@ -131,7 +120,6 @@ Install all necessary packages via npm.
 
 ```bash
 npm install
-
 ```
 
 ## 3. Start the Development Server
@@ -140,21 +128,19 @@ Run the Vite development server.
 
 ```bash
 npm run dev
-
 ```
 
 Frontend runs at:
 
 ```
 http://localhost:5173
-
 ```
 
 ---
 
 # Setup Complete
 
-Backend: `http://127.0.0.1:8000`
+Backend: `http://localhost:8000`
 Frontend: `http://localhost:5173`
 
 Project ready to use.

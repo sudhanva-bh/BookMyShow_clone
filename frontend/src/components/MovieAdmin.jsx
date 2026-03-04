@@ -8,12 +8,10 @@ const MovieAdmin = ({ styles }) => {
   const [movieSchedules, setMovieSchedules] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Stats and Edit Modal State
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [movieStats, setMovieStats] = useState(null);
   const [editForm, setEditForm] = useState(null);
 
-  // Custom Notification Modal State
   const [notification, setNotification] = useState({ show: false, message: '', isError: false });
 
   useEffect(() => { fetchMovies(); }, []);

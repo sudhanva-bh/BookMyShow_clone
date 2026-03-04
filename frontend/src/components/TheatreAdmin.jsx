@@ -32,7 +32,6 @@ const TheatreAdmin = ({ styles }) => {
   const [selectedTheatre, setSelectedTheatre] = useState(null);
   const [screens, setScreens] = useState([]);
   
-  // Show Management State
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [screenShows, setScreenShows] = useState([]);
   const [isAddingShow, setIsAddingShow] = useState(false);
