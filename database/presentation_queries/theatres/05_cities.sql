@@ -1,1 +1,1 @@
-SELECT DISTINCT city FROM theatres;
+SELECT DISTINCT city FROM theatre;

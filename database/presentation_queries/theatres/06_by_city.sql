@@ -1,1 +1,1 @@
-SELECT * FROM theatres WHERE city = :city;
+SELECT * FROM theatre WHERE city = :city;

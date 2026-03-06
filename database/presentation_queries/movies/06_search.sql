@@ -1,1 +1,1 @@
-SELECT * FROM movies WHERE title ILIKE :query;
+SELECT * FROM movie WHERE title ILIKE :query;

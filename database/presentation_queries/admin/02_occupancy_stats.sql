@@ -1,3 +1,6 @@
-SELECT s.show_id, COUNT(bs.seat_id) * 100.0 / (SELECT COUNT(*) FROM seats WHERE screen_id = s.screen_id) as occupancy_rate
-FROM shows s LEFT JOIN booking_seats bs ON s.show_id = bs.show_id
-GROUP BY s.show_id;
+SELECT s.show_id, 
+       COUNT(st.seat_id) FILTER (WHERE st.status IN ('BOOKED', 'PROCESSING')) * 100.0 / 
+       NULLIF((SELECT COUNT(*) FROM seat WHERE screen_id = s.screen_id), 0) as occupancy_rate
+FROM show s 
+LEFT JOIN seat st ON s.show_id = st.show_id
+GROUP BY s.show_id, s.screen_id;

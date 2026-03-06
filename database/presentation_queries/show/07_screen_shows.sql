@@ -1,1 +1,1 @@
-SELECT * FROM shows WHERE screen_id = :screen_id;
+SELECT * FROM show WHERE screen_id = :screen_id;
